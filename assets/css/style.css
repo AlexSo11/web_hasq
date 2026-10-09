@@ -1,63 +1,129 @@
 /* ==========================================================================
-   CV — Hector Alejandro Solís Quiñones
+   CV · Hector Alejandro Solís Quiñones
    Hoja única. Sin build, sin dependencias, sin degradados, sin emojis.
-   Tipografías del sistema: cero peticiones de red.
+   Tipografía autoalojada: cero peticiones a terceros.
    ========================================================================== */
+
+/* 0. Tipografía ------------------------------------------------------------ */
+
+/* Departure Mono (SIL OFL) es una pixel font: se usa solo como display y
+   siempre en múltiplos de 11 px, que es su rejilla de diseño. A otros tamaños
+   el borde del glifo deja de caer en píxeles enteros y pierde la nitidez que
+   justifica usarla. Ver assets/fonts/OFL.txt. */
+
+@font-face {
+  font-family: "Departure Mono";
+  src: url("../fonts/departure-mono.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../fonts/ibm-plex-mono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../fonts/ibm-plex-mono-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../fonts/ibm-plex-mono-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* 1. Tokens ---------------------------------------------------------------- */
 
 :root {
   color-scheme: dark;
 
-  --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", "Cascadia Mono",
-    "JetBrains Mono", "Roboto Mono", Menlo, Consolas, monospace;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
+  /* Display: títulos, cifras, terminal. Texto: monoespaciada de lectura. */
+  --font-display: "Departure Mono", ui-monospace, "SFMono-Regular", Menlo,
+    Consolas, monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", "SF Mono",
+    Menlo, Consolas, monospace;
+
+  /* Movimiento: curvas y duraciones tomadas de una tabla, no inventadas.
+     Las curvas nativas de CSS son demasiado débiles para una entrada de UI. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-press: 140ms;
+  --dur-reveal: 300ms;
+  --stagger: 60ms;
 
   --maxw: 1080px;
   --gutter: clamp(1.25rem, 4vw, 2.75rem);
   --radius: 4px;
   --radius-sm: 3px;
 
-  /* Superficie oscura (tema por defecto) */
-  --bg: #0a0d10;
-  --surface: #10161b;
-  --surface-2: #151d23;
-  --line: #212a31;
-  --line-2: #303c45;
-  --fg: #dfe6ec;
-  --fg-2: #9aa7b2;
-  --fg-3: #8894a0;
-  --accent: #f0b429;
-  --accent-soft: rgb(240 180 41 / 12%);
-  --accent-line: rgb(240 180 41 / 38%);
-  --accent-on: #14100a;
-  --ok: #63d29f;
+  /* Oscuro: shadow de fondo, navy profundo de superficie, frozen de tinta.
+     Contrastes medidos con la fórmula de luminancia relativa de la WCAG:
+     fg 9,47 · fg-2 7,60 · fg-3 6,90 · acento 9,64 (sobre el fondo). */
+  --bg: #141414;
+  --surface: #1c1c28;
+  --surface-2: #23232f;
+  --line: #2e2e3c;
+  --line-2: #3c3c4e;
+  --fg: #a0bddb;
+  --fg-2: #8fa9c7;
+  --fg-3: #86a1bf;
+  --accent: #e0b47c;
+  --accent-soft: rgb(224 180 124 / 14%);
+  --accent-line: rgb(224 180 124 / 40%);
+  --accent-on: #1a1408;
+  --ok: #7fd1a8;
 
-  /* Consumidos por el campo ASCII (assets/js/ascii-field.js) */
-  --ascii-rgb: 240, 180, 41;
-  --ascii-max: 0.16;
+  /* Campo ASCII (assets/js/ascii-field.js). El alfa es distinto en los
+     márgenes porque ahí no hay texto encima: en la columna de contenido está
+     topado para que fg-3 no baje de 4,5:1 sobre el glifo más claro. */
+  --ascii-rgb: 127, 166, 206;
+  --ascii-max: 0.22;
+  --ascii-margin-max: 0.6;
+  --ascii-font-size: 11;
 }
 
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --bg: #f6f4ef;
-  --surface: #fffefb;
-  --surface-2: #f1eee7;
-  --line: #e0dbd0;
-  --line-2: #cdc6b8;
-  --fg: #16181a;
-  --fg-2: #565f68;
-  --fg-3: #5c646e;
-  --accent: #8a5a00;
-  --accent-soft: rgb(138 90 0 / 10%);
-  --accent-line: rgb(138 90 0 / 35%);
-  --accent-on: #fffefb;
+  /* Claro: el complemento frío que faltaba en la paleta. El navy profundo
+     pasa a ser la tinta, que es donde mejor rinde (14,75:1 sobre el fondo). */
+  --bg: #edf0f5;
+  --surface: #ffffff;
+  --surface-2: #e3e8f0;
+  --line: #d2d9e4;
+  --line-2: #b7c2d2;
+  --fg: #1c1c28;
+  --fg-2: #4c5972;
+  --fg-3: #55617a;
+  --accent: #7a5215;
+  --accent-soft: rgb(122 82 21 / 10%);
+  --accent-line: rgb(122 82 21 / 35%);
+  --accent-on: #ffffff;
   --ok: #1c6b48;
 
-  --ascii-rgb: 138, 90, 0;
-  --ascii-max: 0.1;
+  --ascii-rgb: 143, 176, 210;
+  --ascii-max: 0.2;
+  --ascii-margin-max: 0.45;
 }
 
 /* 2. Base ------------------------------------------------------------------ */
@@ -77,7 +143,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: 1rem;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -226,9 +292,10 @@ main,
 
 .section__num {
   color: var(--accent);
-  font-size: 0.8125rem;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
 }
 
 .section__note {
@@ -258,9 +325,10 @@ main,
   align-items: baseline;
   gap: 0.45rem;
   color: var(--fg);
-  font-family: var(--font-mono);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -365,7 +433,7 @@ main,
   cursor: pointer;
   transition-property: background-color, border-color, color, scale;
   transition-duration: 140ms;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  transition-timing-function: var(--ease-out);
 }
 
 .btn:hover {
@@ -414,7 +482,7 @@ main,
   cursor: pointer;
   transition-property: background-color, border-color, color, scale;
   transition-duration: 140ms;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  transition-timing-function: var(--ease-out);
 }
 
 .icon-btn:hover {
@@ -443,7 +511,7 @@ main,
   filter: blur(4px);
   transition-property: opacity, scale, filter;
   transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  transition-timing-function: var(--ease-out);
 }
 
 :root[data-theme="dark"] .icon-btn__icons .icon-moon,
@@ -475,15 +543,24 @@ main,
 .eyebrow {
   margin-bottom: 1.25rem;
   color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 400;
   text-transform: uppercase;
 }
 
 .hero__name {
-  font-size: clamp(2rem, 6.4vw, 3.25rem);
-  letter-spacing: -0.03em;
+  font-family: var(--font-display);
+  font-size: 33px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+@media (min-width: 720px) {
+  .hero__name {
+    font-size: 44px;
+  }
 }
 
 .hero__name span {
@@ -535,8 +612,8 @@ main,
 
 .terminal__title {
   color: var(--fg-3);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 11px;
 }
 
 .terminal__body {
@@ -544,14 +621,14 @@ main,
   padding: 1rem 1.1rem 1.25rem;
   overflow-x: auto;
   color: var(--fg-2);
-  font-family: var(--font-mono);
-  font-size: clamp(0.6875rem, 2.9vw, 0.8125rem);
-  line-height: 1.85;
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 2;
   tab-size: 2;
 }
 
 .terminal__body b {
-  font-weight: 600;
+  font-weight: 400;
   color: var(--fg);
 }
 
@@ -624,6 +701,10 @@ main,
 }
 
 .facts__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.35rem;
   padding: 0.85rem 1rem;
   background: var(--surface);
 }
@@ -639,8 +720,10 @@ main,
 .facts dd {
   margin: 0.15rem 0 0;
   color: var(--fg);
-  font-family: var(--font-mono);
-  font-size: 1.0625rem;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 
@@ -739,7 +822,7 @@ main,
 #copy-email .icon-check {
   transition-property: opacity, scale, filter;
   transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  transition-timing-function: var(--ease-out);
 }
 
 /* 12. Proyectos ------------------------------------------------------------ */
@@ -875,11 +958,15 @@ main,
 .link svg {
   transition-property: transform;
   transition-duration: 160ms;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  transition-timing-function: var(--ease-out);
 }
 
-.link:hover svg {
-  transform: translate(2px, -2px);
+/* Solo con puntero real: en táctil el :hover se dispara al tocar y el icono
+   se mueve sin que nadie lo haya pedido. */
+@media (hover: hover) and (pointer: fine) {
+  .link:hover svg {
+    transform: translate(2px, -2px);
+  }
 }
 
 /* 13. Servicio social ------------------------------------------------------ */
@@ -966,7 +1053,127 @@ main,
   font-size: 0.75rem;
 }
 
-/* 15. Preferencias y salida impresa ---------------------------------------- */
+/* 15. Grupos, figura técnica y movimiento ---------------------------------- */
+
+/* 15.1 Grupos de proyectos y su estado ------------------------------------- */
+
+.projects__group {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+}
+
+.projects__group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem clamp(1.25rem, 3.5vw, 2rem);
+  background: var(--surface-2);
+  color: var(--fg-3);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* El cuadro no es adorno: dice si el proyecto sigue abierto o está cerrado. */
+.projects__group-title::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+}
+
+.projects__group--done .projects__group-title::before {
+  background: var(--ok);
+}
+
+/* 15.2 Figura técnica ------------------------------------------------------ */
+
+/* El plano va siempre sobre papel blanco, también en tema oscuro: es un
+   documento insertado y su tinta es oscura por construcción, así que el pie
+   usa colores fijos y no tokens del tema (7,05:1 sobre el blanco). */
+.plano {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: clamp(0.6rem, 1.6vw, 1rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.plano__view {
+  overflow-x: auto;
+  border: 1px solid #e3e8f0;
+}
+
+.plano img {
+  display: block;
+  width: 100%;
+  min-width: 560px;
+  height: auto;
+}
+
+.plano figcaption {
+  color: #4c5972;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+
+/* 15.3 Movimiento ---------------------------------------------------------- */
+
+/* Las entradas solo se ocultan si el script en línea del <head> marcó el
+   documento como .js, cosa que ocurre antes del primer pintado. Sin JavaScript
+   no hay nada oculto. Si el navegador no trae IntersectionObserver, main.js
+   retira la clase y todo vuelve a verse de golpe. */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+  transition-property: opacity, transform;
+  transition-duration: var(--dur-reveal);
+  transition-timing-function: var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* El terminal se imprime de arriba abajo con un barrido de clip-path: una sola
+   animación, resuelta en el compositor y sin tocar el marcado del bloque. El
+   retardo lo hereda del contenedor, que es el que entra escalonado. */
+@keyframes terminal-print {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.js .terminal__body {
+  animation: terminal-print 480ms var(--ease-out) var(--reveal-delay, 0ms) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Menos movimiento, no cero: el contenido aparece sin desplazarse. */
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .js .terminal__body {
+    animation: none;
+    clip-path: none;
+  }
+}
+
+/* 16. Preferencias y salida impresa ---------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   html {

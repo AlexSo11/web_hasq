@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hector Alejandro Solís Quiñones — Computer Engineer</title>
+    <title>Hector Alejandro Solís Quiñones · Computer Engineer</title>
     <meta
       name="description"
       content="CV of Hector Alejandro Solís Quiñones, Computer Engineer based in Guadalajara. Medical imaging software: PET/CT segmentation, AI-assisted 3D DICOM viewer and access control."
     />
     <meta name="author" content="Hector Alejandro Solís Quiñones" />
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#0a0d10" />
+    <meta name="theme-color" content="#141414" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:title" content="Hector Alejandro Solís Quiñones — Computer Engineer" />
+    <meta property="og:title" content="Hector Alejandro Solís Quiñones · Computer Engineer" />
     <meta
       property="og:description"
       content="Medical imaging software: PET/CT segmentation, AI-assisted 3D DICOM viewer and access control."
@@ -34,6 +34,9 @@
             : "dark";
         }
         document.documentElement.setAttribute("data-theme", theme);
+        // Marked before the first paint: the CSS only reserves the position of
+        // the entrances if there is JavaScript to trigger them.
+        document.documentElement.classList.add("js");
       })();
     </script>
   </head>
@@ -105,20 +108,20 @@
     </header>
 
     <main id="main">
-      <section class="hero" id="top">
+      <section class="hero" id="top" data-reveal-group>
         <div class="wrap hero__in">
           <div>
-            <p class="eyebrow">CV · Guadalajara, Jalisco, Mexico</p>
-            <h1 class="hero__name">
+            <p class="eyebrow" data-reveal>CV · Guadalajara, Jalisco, Mexico</p>
+            <h1 class="hero__name" data-reveal>
               <span>Hector Alejandro</span>
               <span>Solís Quiñones</span>
             </h1>
-            <p class="hero__role">
+            <p class="hero__role" data-reveal>
               Computer Engineer. I build medical imaging software: volume
               segmentation, 3D visualisation and access control, with
               reproducibility and compute cost treated as design constraints.
             </p>
-            <div class="hero__actions">
+            <div class="hero__actions" data-reveal>
               <a class="btn btn--primary" href="#proyectos">View projects</a>
               <a
                 class="btn"
@@ -146,12 +149,12 @@
             </div>
           </div>
 
-          <div class="terminal">
+          <div class="terminal" data-reveal>
             <div class="terminal__bar">
               <span class="terminal__dots" aria-hidden="true">
                 <i></i><i></i><i></i>
               </span>
-              <span class="terminal__title">profile — zsh</span>
+              <span class="terminal__title">profile · zsh</span>
             </div>
             <pre class="terminal__body"><code><span class="c">$</span> whoami
 <b>Hector Alejandro Solís Quiñones</b>
@@ -170,16 +173,21 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
         </div>
       </section>
 
-      <section class="section" id="perfil" aria-labelledby="perfil-title">
+      <section
+        class="section"
+        id="perfil"
+        aria-labelledby="perfil-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="perfil-title">
               <span class="section__num" aria-hidden="true">01</span> Profile
             </h2>
             <p class="section__note">Who I am and what I work on.</p>
           </div>
 
-          <div class="prose">
+          <div class="prose" data-reveal>
             <p>
               I am a Computer Engineer based in Guadalajara, Jalisco. My work
               centres on medical imaging software: reading DICOM with the physics
@@ -189,15 +197,15 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
             <p>
               During my social service at the
               <strong>Computer Intelligence and Biorobotics Lab (CIBLab)</strong>
-              of the University of Guadalajara I built two projects that
-              complement each other: a web DICOM viewer with AI-assisted
-              segmentation, and a PET/CT segmentation pipeline with no machine
-              learning at all, built on 3D superpixels and metaheuristic
-              optimisation.
+              of the University of Guadalajara I built a web DICOM viewer with
+              AI-assisted segmentation and a PET/CT segmentation pipeline with no
+              machine learning at all. I now hold the
+              <strong>technical lead</strong> on a flood digital twin for the
+              Guadalajara Metropolitan Area.
             </p>
             <p>
               I work by one rule: <strong>what has not been measured has not been
-              solved</strong>. Both projects ship test suites, performance budgets
+              solved</strong>. The projects ship test suites, performance budgets
               enforced in continuous integration, and documents that record every
               design decision together with its justification.
             </p>
@@ -205,9 +213,14 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
         </div>
       </section>
 
-      <section class="section" id="stack" aria-labelledby="stack-title">
+      <section
+        class="section"
+        id="stack"
+        aria-labelledby="stack-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="stack-title">
               <span class="section__num" aria-hidden="true">02</span> Stack
             </h2>
@@ -216,11 +229,13 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
             </p>
           </div>
 
-          <div class="stack-grid">
+          <div class="stack-grid" data-reveal>
             <div class="stack-block">
               <h3 class="stack-block__title">Languages</h3>
               <ul class="chips">
                 <li>Python</li>
+                <li>C++</li>
+                <li>Go</li>
                 <li>Rust</li>
                 <li>TypeScript</li>
                 <li>JavaScript</li>
@@ -264,6 +279,8 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
                 <li>SimpleITK</li>
                 <li>PyTorch</li>
                 <li>MONAI</li>
+                <li>ONNX</li>
+                <li>GDAL</li>
                 <li>trimesh</li>
               </ul>
             </div>
@@ -287,6 +304,8 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
               <ul class="chips">
                 <li>Docker</li>
                 <li>Docker Compose</li>
+                <li>Kubernetes</li>
+                <li>Redis</li>
                 <li>nginx</li>
                 <li>Linux</li>
                 <li>Git</li>
@@ -296,23 +315,141 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
         </div>
       </section>
 
-      <section class="section" id="proyectos" aria-labelledby="proyectos-title">
+      <section
+        class="section"
+        id="proyectos"
+        aria-labelledby="proyectos-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="proyectos-title">
               <span class="section__num" aria-hidden="true">03</span> Projects
             </h2>
             <p class="section__note">
-              Both deliverables of my social service at CIBLab. The source is
-              private; I am glad to walk through it in an interview.
+              Two in progress and one closed. The source is private; I am glad to
+              walk through it in an interview.
             </p>
           </div>
 
-          <div class="projects">
-            <article class="project">
-              <div class="project__meta">
-                <p class="meta__period">2026</p>
-                <p class="meta__role">Pipeline design and development</p>
+          <div class="projects" data-reveal>
+            <div class="projects__group">
+              <h3 class="projects__group-title">In development</h3>
+
+              <article class="project">
+                <div class="project__meta">
+                  <p class="meta__period">2026B · in progress</p>
+                  <p class="meta__role">
+                    Technical lead: architecture, integration and deployment
+                  </p>
+                  <p class="meta__org">CUCEI · University of Guadalajara</p>
+                  <div>
+                    <span class="meta__label">Stack</span>
+                    <ul class="chips">
+                      <li>C++</li>
+                      <li>Go</li>
+                      <li>Python</li>
+                      <li>TypeScript</li>
+                      <li>WebGL</li>
+                      <li>Kubernetes</li>
+                      <li>Redis</li>
+                      <li>ONNX</li>
+                      <li>OpenMP</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="project__body">
+                  <h3 class="project__title">
+                    Flood digital twin for the Guadalajara Metropolitan Area
+                  </h3>
+                  <p class="project__summary">
+                    A state orchestrator that keeps a digital replica of the
+                    terrain in sync with live telemetry, to work out how much
+                    water will pool and where it will run before a critical storm
+                    hits. A team of five.
+                  </p>
+
+                  <dl class="facts">
+                    <div class="facts__item">
+                      <dt>Languages</dt>
+                      <dd>4</dd>
+                    </div>
+                    <div class="facts__item">
+                      <dt>Pipeline stages</dt>
+                      <dd>7</dd>
+                    </div>
+                    <div class="facts__item">
+                      <dt>RAM target</dt>
+                      <dd>2 GB</dd>
+                    </div>
+                    <div class="facts__item">
+                      <dt>Team</dt>
+                      <dd>5</dd>
+                    </div>
+                  </dl>
+
+                  <ul class="bullets">
+                    <li>
+                      A <b>Go</b> orchestrator that separates heavy computation
+                      from request handling and rendering, with a
+                      <b>circuit breaker</b>, graceful mesh degradation and a
+                      retry queue with exponential backoff.
+                    </li>
+                    <li>
+                      A <b>C++</b> hydraulic engine solving the shallow water
+                      equations of Saint-Venant, discretised and parallelised with
+                      <b>OpenMP</b>, against closed-source commercial packages at
+                      a fraction of the cost.
+                    </li>
+                    <li>
+                      <b>Frame streaming</b> over WebSockets instead of
+                      accumulating the simulation: the server releases each step
+                      as soon as it ships it and the 3D render runs on the
+                      client's GPU, so the whole system fits in <b>2 GB of
+                      RAM</b>.
+                    </li>
+                    <li>
+                      An <b>orographic dissipation</b> module for Pacific
+                      hurricanes: it turns coastal rainfall (say 200 mm/h) into
+                      the net precipitation that actually reaches the valley
+                      basins, in the order of 65 mm/h.
+                    </li>
+                    <li>
+                      <b>Multiplexing with a Redis cache</b>: one simulation is
+                      computed once and broadcast to every client; if the weather
+                      APIs stop responding, the system falls back to the
+                      historical flood map.
+                    </li>
+                  </ul>
+
+                  <figure class="plano">
+                    <div class="plano__view">
+                      <img
+                        src="../assets/img/arquitectura-gemelo-digital-zmg.svg"
+                        width="1840"
+                        height="1290"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Digital twin architecture: presentation layer, Kubernetes cluster, Go orchestrator, C++ and Python compute workers, and external data sources."
+                      />
+                    </div>
+                    <figcaption>
+                      Full architecture: concurrent clients, Go orchestrator,
+                      compute workers and telemetry sources.
+                    </figcaption>
+                  </figure>
+
+                  <p class="project__links">
+                    <span class="meta__org">Private repository</span>
+                  </p>
+                </div>
+              </article>
+
+              <article class="project">
+                <div class="project__meta">
+                  <p class="meta__period">2026 · in progress</p>
+                  <p class="meta__role">Pipeline design and development</p>
                 <p class="meta__org">CIBLab · University of Guadalajara</p>
                 <div>
                   <span class="meta__label">Stack</span>
@@ -399,37 +536,18 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
                 </ul>
 
                 <p class="project__links">
-                  <a
-                    class="link"
-                    href="https://ciblab.github.io/index.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    CIBLab project
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      stroke-linecap="square"
-                      aria-hidden="true"
-                      focusable="false"
-                    >
-                      <path d="M13.5 4.5h6v6" />
-                      <path d="M19.5 4.5 11 13" />
-                      <path d="M18 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1H10" />
-                    </svg>
-                  </a>
                   <span class="meta__org">Private repository</span>
                 </p>
               </div>
             </article>
+            </div>
+
+            <div class="projects__group projects__group--done">
+              <h3 class="projects__group-title">Completed</h3>
 
             <article class="project">
               <div class="project__meta">
-                <p class="meta__period">2026</p>
+                <p class="meta__period">2026 · completed</p>
                 <p class="meta__role">
                   Migration to Django, 3D viewer and AI engines
                 </p>
@@ -450,7 +568,7 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
 
               <div class="project__body">
                 <h3 class="project__title">
-                  InnovaMed AI — web DICOM viewer with AI-assisted segmentation
+                  InnovaMed AI: web DICOM viewer with AI-assisted segmentation
                 </h3>
                 <p class="project__summary">
                   A web platform to view, segment, anonymise and export CT and MR
@@ -498,8 +616,8 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
                   <li>
                     Inference in an isolated subprocess with <b>real per-stage
                     progress, cancellation and timeout</b>; the hardware probe
-                    uses <code>find_spec</code> so PyTorch —between 1 and
-                    2 GB— is never loaded inside the web process.
+                    uses <code>find_spec</code> so PyTorch (between 1 and
+                    2 GB) is never loaded inside the web process.
                   </li>
                   <li>
                     <code>/api/volume_data</code> from <b>12.7 s to 1.67 s</b>
@@ -517,40 +635,23 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
                 </ul>
 
                 <p class="project__links">
-                  <a
-                    class="link"
-                    href="https://ciblab.github.io/index.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    CIBLab project
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      stroke-linecap="square"
-                      aria-hidden="true"
-                      focusable="false"
-                    >
-                      <path d="M13.5 4.5h6v6" />
-                      <path d="M19.5 4.5 11 13" />
-                      <path d="M18 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1H10" />
-                    </svg>
-                  </a>
                   <span class="meta__org">Private repository</span>
                 </p>
               </div>
             </article>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="section" id="servicio" aria-labelledby="servicio-title">
+      <section
+        class="section"
+        id="servicio"
+        aria-labelledby="servicio-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="servicio-title">
               <span class="section__num" aria-hidden="true">04</span> Social
               service
@@ -558,7 +659,7 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
             <p class="section__note">Where I did it and what I delivered.</p>
           </div>
 
-          <div class="callout">
+          <div class="callout" data-reveal>
             <div class="callout__body">
               <h3 class="callout__title">
                 Computer Intelligence and Biorobotics Lab (CIBLab)
@@ -615,7 +716,7 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
               </div>
               <div>
                 <dt>Period</dt>
-                <dd>February 2026 — October 2026</dd>
+                <dd>February to October 2026</dd>
               </div>
               <div>
                 <dt>Deliverables</dt>
@@ -630,9 +731,14 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
         </div>
       </section>
 
-      <section class="section" id="contacto" aria-labelledby="contacto-title">
+      <section
+        class="section"
+        id="contacto"
+        aria-labelledby="contacto-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="contacto-title">
               <span class="section__num" aria-hidden="true">05</span> Contact
             </h2>
@@ -642,14 +748,14 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
             </p>
           </div>
 
-          <div class="prose">
+          <div class="prose" data-reveal>
             <p>
               Email is the fastest route. You can also reach me on LinkedIn or go
               through my public code on GitHub.
             </p>
           </div>
 
-          <div class="contact__actions">
+          <div class="contact__actions" data-reveal>
             <a class="btn btn--primary" href="mailto:ha.solis.q@gmail.com">
               <svg
                 width="16"

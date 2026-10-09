@@ -13,36 +13,55 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>404 — página no encontrada</title>
+    <title>404 · página no encontrada</title>
     <meta name="robots" content="noindex" />
     <meta name="color-scheme" content="dark light" />
     <style>
+      /* Las fuentes se piden a la raíz del dominio: esta página se sirve para
+         rutas de cualquier profundidad, así que una ruta relativa no valdría.
+         Si no cargan, la pila de reserva mantiene el aspecto de terminal. */
+      @font-face {
+        font-family: "Departure Mono";
+        src: url("/assets/fonts/departure-mono.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "IBM Plex Mono";
+        src: url("/assets/fonts/ibm-plex-mono-400.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
       :root {
         color-scheme: dark;
-        --bg: #0a0d10;
-        --surface: #10161b;
-        --line: #212a31;
-        --fg: #dfe6ec;
-        --fg-2: #9aa7b2;
-        --fg-3: #8894a0;
-        --accent: #f0b429;
-        --accent-on: #14100a;
-        --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas,
-          monospace;
-        --font-sans: system-ui, -apple-system, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
+        --bg: #141414;
+        --surface: #1c1c28;
+        --line: #2e2e3c;
+        --fg: #a0bddb;
+        --fg-2: #8fa9c7;
+        --fg-3: #86a1bf;
+        --accent: #e0b47c;
+        --accent-on: #1a1408;
+        --font-display: "Departure Mono", ui-monospace, "SFMono-Regular", Menlo,
+          Consolas, monospace;
+        --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo,
+          Consolas, monospace;
       }
 
       :root[data-theme="light"] {
         color-scheme: light;
-        --bg: #f6f4ef;
-        --surface: #fffefb;
-        --line: #e0dbd0;
-        --fg: #16181a;
-        --fg-2: #565f68;
-        --fg-3: #5f6771;
-        --accent: #8a5a00;
-        --accent-on: #fffefb;
+        --bg: #edf0f5;
+        --surface: #ffffff;
+        --line: #d2d9e4;
+        --fg: #1c1c28;
+        --fg-2: #4c5972;
+        --fg-3: #55617a;
+        --accent: #7a5215;
+        --accent-on: #ffffff;
       }
 
       *,
@@ -53,13 +72,13 @@
 
       body {
         margin: 0;
-        min-height: 100vh;
+        min-height: 100dvh;
         display: grid;
         place-items: center;
         padding: 1.5rem;
         background: var(--bg);
         color: var(--fg);
-        font-family: var(--font-sans);
+        font-family: var(--font-mono);
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
@@ -92,8 +111,8 @@
 
       .bar span {
         color: var(--fg-3);
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
+        font-family: var(--font-display);
+        font-size: 11px;
       }
 
       .body {
@@ -101,9 +120,9 @@
         padding: 1.25rem 1.25rem 1.5rem;
         overflow-x: auto;
         color: var(--fg-2);
-        font-family: var(--font-mono);
-        font-size: 0.8125rem;
-        line-height: 1.9;
+        font-family: var(--font-display);
+        font-size: 11px;
+        line-height: 2;
       }
 
       .body b {
@@ -193,7 +212,7 @@
       <div class="terminal">
         <div class="bar">
           <i></i><i></i><i></i>
-          <span>404 — not found</span>
+          <span>404 · not found</span>
         </div>
         <pre class="body"><code><span class="c">$</span> cat <b>ruta-solicitada</b>
 cat: ruta-solicitada: No such file or directory

@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hector Alejandro Solís Quiñones — Ing. en Computación</title>
+    <title>Hector Alejandro Solís Quiñones · Ing. en Computación</title>
     <meta
       name="description"
       content="CV de Hector Alejandro Solís Quiñones, Ingeniero en Computación en Guadalajara. Software de imagen médica: segmentación PET/CT, visor DICOM 3D con IA y control de acceso."
     />
     <meta name="author" content="Hector Alejandro Solís Quiñones" />
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#0a0d10" />
+    <meta name="theme-color" content="#141414" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_MX" />
-    <meta property="og:title" content="Hector Alejandro Solís Quiñones — Ing. en Computación" />
+    <meta property="og:title" content="Hector Alejandro Solís Quiñones · Ing. en Computación" />
     <meta
       property="og:description"
       content="Software de imagen médica: segmentación PET/CT, visor DICOM 3D con IA y control de acceso."
@@ -34,6 +34,9 @@
             : "dark";
         }
         document.documentElement.setAttribute("data-theme", theme);
+        // Se marca antes del primer pintado: el CSS solo reserva la posición
+        // de las entradas si hay JavaScript que las vaya a disparar.
+        document.documentElement.classList.add("js");
       })();
     </script>
   </head>
@@ -105,21 +108,21 @@
     </header>
 
     <main id="main">
-      <section class="hero" id="top">
+      <section class="hero" id="top" data-reveal-group>
         <div class="wrap hero__in">
           <div>
-            <p class="eyebrow">CV · Guadalajara, Jalisco</p>
-            <h1 class="hero__name">
+            <p class="eyebrow" data-reveal>CV · Guadalajara, Jalisco</p>
+            <h1 class="hero__name" data-reveal>
               <span>Hector Alejandro</span>
               <span>Solís Quiñones</span>
             </h1>
-            <p class="hero__role">
+            <p class="hero__role" data-reveal>
               Ingeniero en Computación. Construyo software para imagen médica:
               segmentación de volúmenes, visualización 3D y control de acceso,
               con la reproducibilidad y el coste de cómputo como restricciones
               de diseño.
             </p>
-            <div class="hero__actions">
+            <div class="hero__actions" data-reveal>
               <a class="btn btn--primary" href="#proyectos">Ver proyectos</a>
               <a
                 class="btn"
@@ -147,12 +150,12 @@
             </div>
           </div>
 
-          <div class="terminal">
+          <div class="terminal" data-reveal>
             <div class="terminal__bar">
               <span class="terminal__dots" aria-hidden="true">
                 <i></i><i></i><i></i>
               </span>
-              <span class="terminal__title">perfil — zsh</span>
+              <span class="terminal__title">perfil · zsh</span>
             </div>
             <pre class="terminal__body"><code><span class="c">$</span> whoami
 <b>Hector Alejandro Solís Quiñones</b>
@@ -171,16 +174,21 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
         </div>
       </section>
 
-      <section class="section" id="perfil" aria-labelledby="perfil-title">
+      <section
+        class="section"
+        id="perfil"
+        aria-labelledby="perfil-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="perfil-title">
               <span class="section__num" aria-hidden="true">01</span> Perfil
             </h2>
             <p class="section__note">Quién soy y en qué trabajo.</p>
           </div>
 
-          <div class="prose">
+          <div class="prose" data-reveal>
             <p>
               Soy Ingeniero en Computación y vivo en Guadalajara, Jalisco. Mi
               trabajo se concentra en software de imagen médica: leer DICOM con
@@ -190,26 +198,31 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
             <p>
               Durante mi servicio social en el
               <strong>Computer Intelligence and Biorobotics Lab (CIBLab)</strong>
-              de la Universidad de Guadalajara desarrollé dos proyectos que se
-              complementan: un visor DICOM web con segmentación asistida por
-              inteligencia artificial y un pipeline de segmentación PET/CT sin
-              aprendizaje automático, construido sobre supervóxeles 3D y
-              optimización metaheurística.
+              de la Universidad de Guadalajara desarrollé un visor DICOM web con
+              segmentación asistida por inteligencia artificial y un pipeline de
+              segmentación PET/CT sin aprendizaje automático. Ahora llevo el
+              <strong>liderazgo técnico</strong> de un gemelo digital de
+              inundaciones para el Área Metropolitana de Guadalajara.
             </p>
             <p>
               Trabajo con una regla simple:
-              <strong>lo que no está medido no está resuelto</strong>. Los dos
-              proyectos tienen suites de pruebas, presupuestos de rendimiento
-              que se comprueban en integración continua y documentos que
-              registran cada decisión de diseño junto con su justificación.
+              <strong>lo que no está medido no está resuelto</strong>. Los
+              proyectos tienen suites de pruebas, presupuestos de rendimiento que
+              se comprueban en integración continua y documentos que registran
+              cada decisión de diseño junto con su justificación.
             </p>
           </div>
         </div>
       </section>
 
-      <section class="section" id="stack" aria-labelledby="stack-title">
+      <section
+        class="section"
+        id="stack"
+        aria-labelledby="stack-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="stack-title">
               <span class="section__num" aria-hidden="true">02</span> Stack
             </h2>
@@ -219,11 +232,13 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
             </p>
           </div>
 
-          <div class="stack-grid">
+          <div class="stack-grid" data-reveal>
             <div class="stack-block">
               <h3 class="stack-block__title">Lenguajes</h3>
               <ul class="chips">
                 <li>Python</li>
+                <li>C++</li>
+                <li>Go</li>
                 <li>Rust</li>
                 <li>TypeScript</li>
                 <li>JavaScript</li>
@@ -267,6 +282,8 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
                 <li>SimpleITK</li>
                 <li>PyTorch</li>
                 <li>MONAI</li>
+                <li>ONNX</li>
+                <li>GDAL</li>
                 <li>trimesh</li>
               </ul>
             </div>
@@ -290,6 +307,8 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
               <ul class="chips">
                 <li>Docker</li>
                 <li>Docker Compose</li>
+                <li>Kubernetes</li>
+                <li>Redis</li>
                 <li>nginx</li>
                 <li>Linux</li>
                 <li>Git</li>
@@ -299,23 +318,141 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
         </div>
       </section>
 
-      <section class="section" id="proyectos" aria-labelledby="proyectos-title">
+      <section
+        class="section"
+        id="proyectos"
+        aria-labelledby="proyectos-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="proyectos-title">
               <span class="section__num" aria-hidden="true">03</span> Proyectos
             </h2>
             <p class="section__note">
-              Los dos entregables de mi servicio social en CIBLab. El código es
-              privado; con gusto lo recorro contigo en una entrevista.
+              Dos en curso y uno cerrado. El código es privado; con gusto lo
+              recorro contigo en una entrevista.
             </p>
           </div>
 
-          <div class="projects">
-            <article class="project">
-              <div class="project__meta">
-                <p class="meta__period">2026</p>
-                <p class="meta__role">Diseño y desarrollo del pipeline</p>
+          <div class="projects" data-reveal>
+            <div class="projects__group">
+              <h3 class="projects__group-title">En desarrollo</h3>
+
+              <article class="project">
+                <div class="project__meta">
+                  <p class="meta__period">2026B · en curso</p>
+                  <p class="meta__role">
+                    Líder técnico: arquitectura, integración y despliegue
+                  </p>
+                  <p class="meta__org">CUCEI · Universidad de Guadalajara</p>
+                  <div>
+                    <span class="meta__label">Stack</span>
+                    <ul class="chips">
+                      <li>C++</li>
+                      <li>Go</li>
+                      <li>Python</li>
+                      <li>TypeScript</li>
+                      <li>WebGL</li>
+                      <li>Kubernetes</li>
+                      <li>Redis</li>
+                      <li>ONNX</li>
+                      <li>OpenMP</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="project__body">
+                  <h3 class="project__title">
+                    Gemelo digital de inundaciones para la ZMG
+                  </h3>
+                  <p class="project__summary">
+                    Orquestador de estado que mantiene una réplica digital del
+                    terreno sincronizada con la telemetría real, para calcular
+                    cuánta agua se acumulará y hacia dónde correrá antes de que
+                    empiece una tormenta crítica. Equipo de cinco personas.
+                  </p>
+
+                  <dl class="facts">
+                    <div class="facts__item">
+                      <dt>Lenguajes</dt>
+                      <dd>4</dd>
+                    </div>
+                    <div class="facts__item">
+                      <dt>Etapas del pipeline</dt>
+                      <dd>7</dd>
+                    </div>
+                    <div class="facts__item">
+                      <dt>Objetivo de RAM</dt>
+                      <dd>2 GB</dd>
+                    </div>
+                    <div class="facts__item">
+                      <dt>Equipo</dt>
+                      <dd>5</dd>
+                    </div>
+                  </dl>
+
+                  <ul class="bullets">
+                    <li>
+                      Orquestador en <b>Go</b> que separa el cómputo pesado de la
+                      gestión de peticiones y del renderizado, con
+                      <b>Circuit Breaker</b>, degradación elegante de la malla y
+                      cola de reintentos con espera exponencial.
+                    </li>
+                    <li>
+                      Motor hidráulico en <b>C++</b> que resuelve las ecuaciones
+                      de aguas poco profundas de Saint-Venant, discretizadas y
+                      paralelizadas con <b>OpenMP</b>, frente a los paquetes
+                      comerciales de código cerrado y alto coste.
+                    </li>
+                    <li>
+                      <b>Streaming de fotogramas</b> por WebSocket en lugar de
+                      acumular la simulación: el servidor libera cada instante en
+                      cuanto lo envía y el render 3D ocurre en la GPU del
+                      cliente, así que el sistema cabe en <b>2 GB de RAM</b>.
+                    </li>
+                    <li>
+                      Módulo de <b>disipación orográfica</b> para huracanes del
+                      Pacífico: convierte la lluvia costera (por ejemplo
+                      200 mm/h) en la precipitación neta que llega a las cuencas
+                      del valle, del orden de 65 mm/h.
+                    </li>
+                    <li>
+                      <b>Multiplexación con caché en Redis</b>: una misma
+                      simulación se calcula una vez y se difunde a todos los
+                      clientes; si las APIs meteorológicas no responden, el
+                      sistema conmuta al histórico del Mapa Único de
+                      Inundaciones.
+                    </li>
+                  </ul>
+
+                  <!--<figure class="plano">
+                    <div class="plano__view">
+                      <img
+                        src="assets/img/arquitectura-gemelo-digital-zmg.svg"
+                        width="1840"
+                        height="1290"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Arquitectura del gemelo digital: capa de presentación, clúster de Kubernetes, orquestador en Go, workers de cómputo en C++ y Python, y fuentes de datos externas."
+                      />
+                    </div>
+                    <figcaption>
+                      Arquitectura completa: clientes concurrentes, orquestador
+                      en Go, workers de cómputo y fuentes de telemetría.
+                    </figcaption>
+                  </figure> -->
+
+                  <p class="project__links">
+                    <span class="meta__org">Repositorio privado</span>
+                  </p>
+                </div>
+              </article>
+
+              <article class="project">
+                <div class="project__meta">
+                  <p class="meta__period">2026 · en curso</p>
+                  <p class="meta__role">Diseño y desarrollo del pipeline</p>
                 <p class="meta__org">CIBLab · Universidad de Guadalajara</p>
                 <div>
                   <span class="meta__label">Stack</span>
@@ -400,37 +537,18 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
                 </ul>
 
                 <p class="project__links">
-                  <a
-                    class="link"
-                    href="https://ciblab.github.io/index.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Proyecto del CIBLab
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      stroke-linecap="square"
-                      aria-hidden="true"
-                      focusable="false"
-                    >
-                      <path d="M13.5 4.5h6v6" />
-                      <path d="M19.5 4.5 11 13" />
-                      <path d="M18 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1H10" />
-                    </svg>
-                  </a>
                   <span class="meta__org">Repositorio privado</span>
                 </p>
               </div>
             </article>
+            </div>
+
+            <div class="projects__group projects__group--done">
+              <h3 class="projects__group-title">Concluido</h3>
 
             <article class="project">
               <div class="project__meta">
-                <p class="meta__period">2026</p>
+                <p class="meta__period">2026 · concluido</p>
                 <p class="meta__role">
                   Migración a Django, visor 3D y motores de IA
                 </p>
@@ -451,7 +569,7 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
 
               <div class="project__body">
                 <h3 class="project__title">
-                  InnovaMed AI — visor DICOM web con segmentación asistida por IA
+                  InnovaMed AI: visor DICOM web con segmentación asistida por IA
                 </h3>
                 <p class="project__summary">
                   Plataforma web para visualizar, segmentar, anonimizar y
@@ -501,8 +619,8 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
                   <li>
                     Inferencia en subproceso aislado con <b>progreso real por
                     etapas, cancelación y timeout</b>; la sonda de hardware usa
-                    <code>find_spec</code> para no cargar PyTorch —entre 1 y
-                    2 GB— dentro del proceso web.
+                    <code>find_spec</code> para no cargar PyTorch (entre 1 y
+                    2 GB) dentro del proceso web.
                   </li>
                   <li>
                     <code>/api/volume_data</code> de <b>12.7 s a 1.67 s</b> con
@@ -520,40 +638,23 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
                 </ul>
 
                 <p class="project__links">
-                  <a
-                    class="link"
-                    href="https://ciblab.github.io/index.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Proyecto del CIBLab
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      stroke-linecap="square"
-                      aria-hidden="true"
-                      focusable="false"
-                    >
-                      <path d="M13.5 4.5h6v6" />
-                      <path d="M19.5 4.5 11 13" />
-                      <path d="M18 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1H10" />
-                    </svg>
-                  </a>
                   <span class="meta__org">Repositorio privado</span>
                 </p>
               </div>
             </article>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="section" id="servicio" aria-labelledby="servicio-title">
+      <section
+        class="section"
+        id="servicio"
+        aria-labelledby="servicio-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="servicio-title">
               <span class="section__num" aria-hidden="true">04</span> Servicio
               social
@@ -561,7 +662,7 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
             <p class="section__note">Dónde lo hice y qué entregué.</p>
           </div>
 
-          <div class="callout">
+          <div class="callout" data-reveal>
             <div class="callout__body">
               <h3 class="callout__title">
                 Computer Intelligence and Biorobotics Lab (CIBLab)
@@ -618,7 +719,7 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
               </div>
               <div>
                 <dt>Periodo</dt>
-                <dd>Febrero 2026 — octubre 2026</dd>
+                <dd>Febrero a octubre de 2026</dd>
               </div>
               <div>
                 <dt>Entregables</dt>
@@ -633,9 +734,14 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
         </div>
       </section>
 
-      <section class="section" id="contacto" aria-labelledby="contacto-title">
+      <section
+        class="section"
+        id="contacto"
+        aria-labelledby="contacto-title"
+        data-reveal-group
+      >
         <div class="wrap">
-          <div class="section__head">
+          <div class="section__head" data-reveal>
             <h2 class="section__title" id="contacto-title">
               <span class="section__num" aria-hidden="true">05</span> Contacto
             </h2>
@@ -645,14 +751,14 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
             </p>
           </div>
 
-          <div class="prose">
+          <div class="prose" data-reveal>
             <p>
               La vía más rápida es el correo. También puedes escribirme por
               LinkedIn o revisar el código público en GitHub.
             </p>
           </div>
 
-          <div class="contact__actions">
+          <div class="contact__actions" data-reveal>
             <a class="btn btn--primary" href="mailto:ha.solis.q@gmail.com">
               <svg
                 width="16"

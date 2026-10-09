@@ -1,0 +1,35 @@
+# Cabeceras para Cloudflare Pages. El archivo va en la raíz de la salida.
+#
+# Sobre la CSP: los tres scripts en línea (el del tema en index.html, el de
+# en/index.html y el de 404.html) van autorizados por su hash sha256, así que si
+# editas su contenido hay que recalcular el hash o el navegador los bloqueará y
+# el tema dejará de inicializarse. `style-src` sí necesita 'unsafe-inline'
+# porque 404.html lleva un bloque <style> y atributos style en línea.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-RKGDAhhhxw8uYLbpiW6cimPdSn388rNDb6972649BTE=' 'sha256-AZuRtxIR5W0GlXzaU9W/iLXtJrM8KV52+pGT9HzT0iU=' 'sha256-ycHX6lTCKFPygm1ZzVqBR0KWbDJ09hDeuMSbf/d1zU4='; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+
+# El HTML se revalida siempre: los nombres no llevan huella, así que la caché
+# larga se reserva para las fuentes, cuyo nombre cambia si cambia el archivo.
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/en/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/404.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/assets/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
