@@ -1,7 +1,8 @@
 # CV en línea · Hector Alejandro Solís Quiñones
 
-Sitio personal estático: perfil, stack, tres proyectos y el servicio social en el
-CIBLab. Sin build, sin dependencias, sin rastreadores y sin coste de servidor.
+Sitio personal estático: perfil, stack, servicio social y siete proyectos (dos en
+curso y cinco concluidos). Sin build, sin dependencias, sin rastreadores y sin
+coste de servidor.
 
 - **Español:** `index.html`
 - **Inglés:** `en/index.html`
@@ -20,7 +21,7 @@ CIBLab. Sin build, sin dependencias, sin rastreadores y sin coste de servidor.
 │   ├── js/ascii-field.js          Fondo ASCII en <canvas>
 │   ├── js/main.js                 Tema, entradas por scroll, sección activa, copiar correo
 │   ├── fonts/                     Departure Mono + IBM Plex Mono (SIL OFL) y su licencia
-│   └── img/                       Favicon y la figura de arquitectura
+│   └── img/                       Favicon
 └── markdowns/                     Documentación de trabajo (ignorada por git, no se publica)
 ```
 
@@ -115,11 +116,20 @@ El texto está directamente en los dos HTML, sin plantillas ni i18n.
 | Nombre, rol y terminal | `index.html` y `en/index.html`, sección `.hero` |
 | Perfil | `id="perfil"` |
 | Stack | `id="stack"` (bloques `.stack-block`) |
-| Proyectos | `id="proyectos"` (grupos `.projects__group` con un `<article class="project">` cada uno) |
 | Servicio social | `id="servicio"` |
+| Proyectos | `id="proyectos"`: dos grupos (`.projects__group`) con su rejilla de tarjetas (`.projects__grid`) y un `<article class="project">` por proyecto |
+| Diagrama de arquitectura | `id="proyectos"`, bloque `.diagrama` dentro de la tarjeta del gemelo digital |
 | Contacto | `id="contacto"` |
 | Colores, tipografía, movimiento | `assets/css/style.css`, bloque *1. Tokens* |
 | Densidad y zonas del fondo | `--ascii-max` y `--ascii-margin-max` en la hoja; el ruido y el tramado en `ascii-field.js` |
+
+Las secciones van en este orden: perfil, stack, servicio social, proyectos y
+contacto. Si mueves una, renumera su `section__num` y su entrada en la nav.
+
+La tarjeta «Esta página» cita el peso total del sitio (226 kB). Si añades o
+quitas archivos, mide con
+`find . -type f -not -path './markdowns/*' -not -path './.git/*' -printf '%s\n' | awk '{s+=$1} END {print s/1024" kB"}'`
+y actualiza esa cifra: es una afirmación verificable y conviene que siga siéndolo.
 
 ## Sistema de diseño
 
@@ -198,8 +208,13 @@ impresión, pero el contenido se ve entero.
 ### Otras decisiones
 
 - **Sin degradados y sin emojis**, por pedido explícito, y **sin guiones em** en
-  el texto visible. La hoja no contiene la palabra `gradient`, y el único SVG que
-  venía con uno (la figura de arquitectura) se aplanó al incorporarlo.
+  el texto visible. La hoja no contiene la palabra `gradient` en ninguna regla.
+- **La arquitectura del gemelo digital se cuenta con ASCII**, no con una imagen:
+  un bloque `<pre>` de cuatro capas dentro de su tarjeta, de 37 caracteres de
+  ancho como máximo para que quepa en un móvil sin desplazarse. Lleva
+  `role="img"` y un `aria-label`, de modo que un lector de pantalla oye la
+  descripción y no las barras. El SVG de la documentación, que pesaba 44 kB y
+  traía un degradado y catorce sombras, no se publica.
 - **Contraste e impresión**: los estilos de `@media print` ocultan la decoración y
   el navegador añade la URL de cada enlace, así que `Ctrl+P` da un CV en papel
   decente sin necesidad de un PDF aparte.
@@ -211,12 +226,15 @@ impresión, pero el contenido se ve entero.
 
 ## Estado del contenido
 
-Los tres repositorios (gemelo digital, PET/CT e InnovaMed AI) son privados, así
-que las tarjetas solo muestran «Repositorio privado». Si alguno se hace público,
-basta con añadir el enlace en su bloque `.project__links`, en los dos idiomas.
+Hay siete proyectos: dos en curso y cinco concluidos.
 
-La única referencia externa que queda es la página del laboratorio, enlazada una
-sola vez en la sección de servicio social.
+- **Sin enlace** (repositorio privado): el gemelo digital, la segmentación PET/CT
+  y el visor InnovaMed AI. En su lugar muestran «Repositorio privado».
+- **Con enlace público**: los sistemas de gestión hospitalaria, control escolar y
+  gestión de farmacia, y este mismo sitio.
+
+La única referencia externa que no es un repositorio es la página del laboratorio,
+enlazada una sola vez en la sección de servicio social.
 
 ### `markdowns/` no se publica
 
@@ -228,4 +246,4 @@ seguridad de `README_DEPLOY_WEB.md`, que enumera los puntos pendientes del visor
 limiting y la advertencia de que no es apto para uso clínico real).
 
 El sitio no depende de ella: el contenido de los proyectos ya está escrito en los
-dos HTML, y la figura de arquitectura se copió a `assets/img/` ya aplanada.
+dos HTML y la arquitectura del gemelo digital está resumida como diagrama ASCII.
