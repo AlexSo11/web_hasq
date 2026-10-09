@@ -54,7 +54,7 @@
         <nav class="nav" aria-label="Sections">
           <a href="#perfil">profile</a>
           <a href="#stack">stack</a>
-<a href="#servicio">social service</a>
+<a href="#experiencia">experience</a>
                     <a href="#proyectos">projects</a>
           <a href="#contacto">contact</a>
         </nav>
@@ -320,17 +320,16 @@ in-development/   completed/
 
       <section
         class="section"
-        id="servicio"
-        aria-labelledby="servicio-title"
+        id="experiencia"
+        aria-labelledby="experiencia-title"
         data-reveal-group
       >
         <div class="wrap">
           <div class="section__head" data-reveal>
-            <h2 class="section__title" id="servicio-title">
-              <span class="section__num" aria-hidden="true">03</span> Social
-              service
+            <h2 class="section__title" id="experiencia-title">
+              <span class="section__num" aria-hidden="true">03</span> Experience
             </h2>
-            <p class="section__note">Where I did it and what I delivered.</p>
+            <p class="section__note">Where I worked and what I delivered.</p>
           </div>
 
           <div class="callout" data-reveal>
@@ -424,7 +423,7 @@ in-development/   completed/
 
           <div class="projects" data-reveal>
             <section
-              class="projects__group projects__group--dev"
+              class="projects__group"
               aria-labelledby="proyectos-en-desarrollo"
             >
               <h3 class="projects__group-title" id="proyectos-en-desarrollo">
@@ -454,11 +453,10 @@ in-development/   completed/
                     Flood digital twin for the Guadalajara Metropolitan Area
                   </h4>
                   <p class="project__summary">
-                    A state orchestrator that keeps a digital replica of the
-                    terrain in sync with live telemetry, to work out how much
-                    water will pool and where it will run before a critical storm
-                    hits. A team of five, with architecture and integration in
-                    my hands.
+                    A digital replica of the terrain in sync with live telemetry,
+                    to work out how much water will pool and where it will run
+                    before a storm. A team of five, with the architecture in my
+                    hands.
                   </p>
 
                   <dl class="facts">
@@ -483,34 +481,17 @@ in-development/   completed/
                   <ul class="bullets">
                     <li>
                       A <b>Go</b> orchestrator that separates heavy computation
-                      from request handling and rendering, with a
-                      <b>circuit breaker</b>, graceful mesh degradation and a
-                      retry queue with exponential backoff.
+                      from request handling, with a <b>circuit breaker</b> and
+                      graceful mesh degradation.
                     </li>
                     <li>
-                      A <b>C++</b> hydraulic engine solving the shallow water
-                      equations of Saint-Venant, discretised and parallelised with
-                      <b>OpenMP</b>, against closed-source commercial packages at
-                      a fraction of the cost.
+                      A <b>C++</b> hydraulic engine: shallow water equations of
+                      Saint-Venant parallelised with <b>OpenMP</b>, against
+                      closed-source commercial packages.
                     </li>
                     <li>
-                      <b>Frame streaming</b> over WebSockets instead of
-                      accumulating the simulation: the server releases each step
-                      as soon as it ships it and the 3D render runs on the
-                      client's GPU, so the whole system fits in <b>2 GB of
-                      RAM</b>.
-                    </li>
-                    <li>
-                      An <b>orographic dissipation</b> module for Pacific
-                      hurricanes: it turns coastal rainfall (say 200 mm/h) into
-                      the net precipitation that actually reaches the valley
-                      basins, in the order of 65 mm/h.
-                    </li>
-                    <li>
-                      <b>Multiplexing with a Redis cache</b>: one simulation is
-                      computed once and broadcast to every client; if the weather
-                      APIs stop responding, the system falls back to the
-                      historical flood map.
+                      <b>Frame streaming</b> over WebSockets and rendering on the
+                      client's GPU: the whole system fits in <b>2 GB of RAM</b>.
                     </li>
                   </ul>
 
@@ -568,10 +549,9 @@ sources
                   optimisation
                 </h4>
                 <p class="project__summary">
-                  A full rewrite of a PET/CT study segmentation pipeline: it
-                  replaces thresholding on 1D histograms with spatially aware
-                  segmentation, with no machine learning and with every result
-                  traceable back to its equation.
+                  A PET/CT segmentation pipeline with no machine learning: it
+                  replaces thresholding on 1D histograms with spatially aware,
+                  traceable segmentation.
                 </p>
 
                 <dl class="facts">
@@ -596,39 +576,16 @@ sources
                 <ul class="bullets">
                   <li>
                     PET→CT co-registration with a <b>cubic B-spline</b> and
-                    clustering into <b>SLIC 3D superpixels</b> with the spatial
-                    distance measured in millimetres, so anisotropic volumes are
-                    not flattened.
+                    <b>SLIC 3D superpixels</b>; <b>N-dimensional CCO</b>
+                    optimisation over [HU, SUV, X, Y, Z, |∇HU|].
                   </li>
                   <li>
-                    <b>N-dimensional CCO</b> optimisation over the vector
-                    [HU, SUV, X, Y, Z, |∇HU|]. With random seeding the swarm
-                    collapsed centroids and per-class IoU fell to 0.33; with
-                    k-means++ seeding it reaches <b>1.0</b> on the same
-                    evaluation budget.
+                    Rust meshing kernel with exact equivalence against NumPy:
+                    <b>20.5 s down to 0.53 s</b> (about 39× faster).
                   </li>
                   <li>
-                    Rust meshing kernel with <b>identical faces and vertices</b>
-                    against NumPy: <b>20.5 s down to 0.53 s</b> (about 39×
-                    faster), including shipping the mask packed at 1 bit per
-                    voxel.
-                  </li>
-                  <li>
-                    Per-axis <b>working grid</b> instead of uniform downsampling:
-                    on a real 512×512×343 study anisotropy drops from 2.56 to
+                    Per-axis <b>working grid</b>: anisotropy drops from 2.56 to
                     1.56 and topological noise from 0.060 to 0.046.
-                  </li>
-                  <li>
-                    A three.js viewer that decides threshold and colour
-                    <b>on the client</b>: the GLB carries per-vertex scalars
-                    (<code>_SUV</code>, <code>_HU</code>, <code>_REGION</code>)
-                    and no baked colour, so recolouring does not invalidate the
-                    artefact hash.
-                  </li>
-                  <li>
-                    Three real defects of the previous version, found and fixed:
-                    cross-entropy that was identically zero, a dose in MBq read
-                    as Bq, and an injection time anchored to 1900.
                   </li>
                 </ul>
 
@@ -673,6 +630,21 @@ sources
                   DICOM studies. Processing and inference run on the server; 3D
                   rendering and interaction run in the browser.
                 </p>
+
+                <figure class="captura">
+                  <img
+                    src="../assets/img/innovamed-visor.webp"
+                    width="1600"
+                    height="877"
+                    loading="lazy"
+                    decoding="async"
+                    alt="InnovaMed AI landing page: the 3D viewer with the study model, the synchronised axial, sagittal and coronal planes, and the sign-in actions."
+                  />
+                  <figcaption>
+                    The viewer's landing page: 3D render of the study and the
+                    three synchronised planes.
+                  </figcaption>
+                </figure>
 
                 <dl class="facts">
                   <div class="facts__item">
@@ -883,7 +855,7 @@ sources
                 </p>
                 <ul class="bullets">
                   <li>
-                    <b>~225 kB</b> in total, fonts included, and no third-party
+                    <b>~270 kB</b> in total, fonts included, and no third-party
                     requests.
                   </li>
                   <li>

@@ -726,12 +726,6 @@ main,
   font-variant-numeric: tabular-nums;
 }
 
-/* En una tarjeta estrecha cuatro fichas caben en 2x2; a todo el ancho se
-   reparten solas en una sola fila. */
-.projects__group--dev .facts {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
 /* 11. Etiquetas de tecnología ---------------------------------------------- */
 
 .chips {
@@ -839,17 +833,10 @@ main,
   gap: clamp(2rem, 5vw, 3.25rem);
 }
 
-/* Por defecto, una tarjeta por fila ocupando todo el ancho. Solo el grupo en
-   desarrollo pone sus dos proyectos en paralelo. */
+/* Una tarjeta por fila, a todo el ancho, en los dos grupos. */
 .projects__grid {
   display: grid;
   gap: clamp(1rem, 2.2vw, 1.5rem);
-}
-
-@media (min-width: 880px) {
-  .projects__group--dev .projects__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 /* Tarjeta con borde propio en lugar de celdas que comparten línea: así una
@@ -1149,7 +1136,31 @@ main,
   line-height: 1.55;
 }
 
-/* 15.3 Movimiento ---------------------------------------------------------- */
+/* 15.3 Captura de pantalla -------------------------------------------------- */
+
+/* La captura del visor tiene fondo claro propio, así que va enmarcada como un
+   documento insertado y con proporción reservada para que no salte el layout. */
+.captura {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.captura img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.captura figcaption {
+  color: var(--fg-3);
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+
+/* 15.4 Movimiento ---------------------------------------------------------- */
 
 /* Las entradas solo se ocultan si el script en línea del <head> marcó el
    documento como .js, cosa que ocurre antes del primer pintado. Sin JavaScript

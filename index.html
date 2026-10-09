@@ -54,7 +54,7 @@
         <nav class="nav" aria-label="Secciones">
           <a href="#perfil">perfil</a>
           <a href="#stack">stack</a>
-<a href="#servicio">servicio social</a>
+<a href="#experiencia">experiencia</a>
                     <a href="#proyectos">proyectos</a>
           <a href="#contacto">contacto</a>
         </nav>
@@ -322,17 +322,16 @@ en-desarrollo/   concluidos/
 
       <section
         class="section"
-        id="servicio"
-        aria-labelledby="servicio-title"
+        id="experiencia"
+        aria-labelledby="experiencia-title"
         data-reveal-group
       >
         <div class="wrap">
           <div class="section__head" data-reveal>
-            <h2 class="section__title" id="servicio-title">
-              <span class="section__num" aria-hidden="true">03</span> Servicio
-              social
+            <h2 class="section__title" id="experiencia-title">
+              <span class="section__num" aria-hidden="true">03</span> Experiencia
             </h2>
-            <p class="section__note">Dónde lo hice y qué entregué.</p>
+            <p class="section__note">Dónde trabajé y qué entregué.</p>
           </div>
 
           <div class="callout" data-reveal>
@@ -426,7 +425,7 @@ en-desarrollo/   concluidos/
 
           <div class="projects" data-reveal>
             <section
-              class="projects__group projects__group--dev"
+              class="projects__group"
               aria-labelledby="proyectos-en-desarrollo"
             >
               <h3 class="projects__group-title" id="proyectos-en-desarrollo">
@@ -456,11 +455,10 @@ en-desarrollo/   concluidos/
                     Gemelo digital de inundaciones para la ZMG
                   </h4>
                   <p class="project__summary">
-                    Orquestador de estado que mantiene una réplica digital del
-                    terreno sincronizada con la telemetría real, para calcular
-                    cuánta agua se acumulará y hacia dónde correrá antes de que
-                    empiece una tormenta crítica. Equipo de cinco personas, con
-                    la arquitectura y la integración a mi cargo.
+                    Réplica digital del terreno sincronizada con la telemetría
+                    real, para calcular cuánta agua se acumulará y hacia dónde
+                    correrá antes de una tormenta. Equipo de cinco personas, con
+                    la arquitectura a mi cargo.
                   </p>
 
                   <dl class="facts">
@@ -484,35 +482,18 @@ en-desarrollo/   concluidos/
 
                   <ul class="bullets">
                     <li>
-                      Orquestador en <b>Go</b> que separa el cómputo pesado de la
-                      gestión de peticiones y del renderizado, con
-                      <b>Circuit Breaker</b>, degradación elegante de la malla y
-                      cola de reintentos con espera exponencial.
+                      Orquestador en <b>Go</b> que separa el cómputo pesado de
+                      las peticiones, con <b>Circuit Breaker</b> y degradación
+                      elegante de la malla.
                     </li>
                     <li>
-                      Motor hidráulico en <b>C++</b> que resuelve las ecuaciones
-                      de aguas poco profundas de Saint-Venant, discretizadas y
-                      paralelizadas con <b>OpenMP</b>, frente a los paquetes
-                      comerciales de código cerrado y alto coste.
+                      Motor hidráulico en <b>C++</b>: ecuaciones de aguas poco
+                      profundas de Saint-Venant paralelizadas con <b>OpenMP</b>,
+                      frente a los paquetes comerciales de código cerrado.
                     </li>
                     <li>
-                      <b>Streaming de fotogramas</b> por WebSocket en lugar de
-                      acumular la simulación: el servidor libera cada instante en
-                      cuanto lo envía y el render 3D ocurre en la GPU del
-                      cliente, así que el sistema cabe en <b>2 GB de RAM</b>.
-                    </li>
-                    <li>
-                      Módulo de <b>disipación orográfica</b> para huracanes del
-                      Pacífico: convierte la lluvia costera (por ejemplo
-                      200 mm/h) en la precipitación neta que llega a las cuencas
-                      del valle, del orden de 65 mm/h.
-                    </li>
-                    <li>
-                      <b>Multiplexación con caché en Redis</b>: una misma
-                      simulación se calcula una vez y se difunde a todos los
-                      clientes; si las APIs meteorológicas no responden, el
-                      sistema conmuta al histórico del Mapa Único de
-                      Inundaciones.
+                      <b>Streaming de fotogramas</b> por WebSocket y render en la
+                      GPU del cliente: el sistema cabe en <b>2 GB de RAM</b>.
                     </li>
                   </ul>
 
@@ -570,10 +551,9 @@ fuentes
                   metaheurística
                 </h4>
                 <p class="project__summary">
-                  Reescritura completa de un pipeline de segmentación de estudios
-                  PET/CT: sustituye la umbralización sobre histogramas 1D por una
-                  segmentación espacialmente consciente, sin aprendizaje
-                  automático y con cada resultado rastreable hasta su ecuación.
+                  Pipeline de segmentación PET/CT sin aprendizaje automático:
+                  sustituye la umbralización sobre histogramas 1D por una
+                  segmentación espacialmente consciente y trazable.
                 </p>
 
                 <dl class="facts">
@@ -597,38 +577,18 @@ fuentes
 
                 <ul class="bullets">
                   <li>
-                    Co-registro PET→CT por <b>B-spline cúbico</b> y agrupamiento
-                    en <b>supervóxeles SLIC 3D</b> con la distancia espacial
-                    medida en milímetros, para no aplanar volúmenes anisótropos.
+                    Co-registro PET→CT por <b>B-spline cúbico</b> y
+                    <b>supervóxeles SLIC 3D</b>; optimización
+                    <b>CCO N-dimensional</b> sobre [HU, SUV, X, Y, Z, |∇HU|].
                   </li>
                   <li>
-                    Optimización <b>CCO N-dimensional</b> sobre el vector
-                    [HU, SUV, X, Y, Z, |∇HU|]. Con siembra aleatoria el enjambre
-                    colapsaba centroides y el IoU por clase caía a 0.33; con
-                    siembra k-means++ llega a <b>1.0</b> con el mismo presupuesto
-                    de evaluaciones.
+                    Kernel de mallado en <b>Rust</b> con equivalencia exacta
+                    frente a NumPy: <b>20.5 s a 0.53 s</b> (unas 39 veces más
+                    rápido).
                   </li>
                   <li>
-                    Kernel de mallado en Rust con equivalencia de
-                    <b>caras y vértices idénticos</b> frente a NumPy:
-                    <b>20.5 s a 0.53 s</b> (unas 39 veces más rápido), incluido
-                    el transporte de la máscara empaquetada a 1 bit por vóxel.
-                  </li>
-                  <li>
-                    Rejilla de trabajo <b>por eje</b> en lugar de reducción
-                    uniforme: sobre un estudio real de 512×512×343 la anisotropía
-                    baja de 2.56 a 1.56 y el ruido topológico de 0.060 a 0.046.
-                  </li>
-                  <li>
-                    Visor three.js que decide umbral y color <b>en el cliente</b>:
-                    el GLB lleva escalares por vértice (<code>_SUV</code>,
-                    <code>_HU</code>, <code>_REGION</code>) y no color horneado,
-                    así que recolorear no invalida el hash del artefacto.
-                  </li>
-                  <li>
-                    Tres defectos reales de la versión anterior, encontrados y
-                    corregidos: entropía cruzada idénticamente cero, dosis en
-                    MBq leída como Bq y hora de inyección anclada a 1900.
+                    Rejilla de trabajo <b>por eje</b>: la anisotropía baja de
+                    2.56 a 1.56 y el ruido topológico de 0.060 a 0.046.
                   </li>
                 </ul>
 
@@ -674,6 +634,21 @@ fuentes
                   inferencia corren en el servidor; el render 3D y la
                   interacción, en el navegador.
                 </p>
+
+                <figure class="captura">
+                  <img
+                    src="assets/img/innovamed-visor.webp"
+                    width="1600"
+                    height="877"
+                    loading="lazy"
+                    decoding="async"
+                    alt="Portada de InnovaMed AI: el visor 3D con el modelo del estudio, los planos axial, sagital y coronal sincronizados, y los accesos de sesión."
+                  />
+                  <figcaption>
+                    Portada del visor: render 3D del estudio y los tres planos
+                    sincronizados.
+                  </figcaption>
+                </figure>
 
                 <dl class="facts">
                   <div class="facts__item">
@@ -886,7 +861,7 @@ fuentes
                 </p>
                 <ul class="bullets">
                   <li>
-                    <b>~225 kB</b> en total, fuentes incluidas, y cero peticiones a
+                    <b>~270 kB</b> en total, fuentes incluidas, y cero peticiones a
                     terceros.
                   </li>
                   <li>

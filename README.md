@@ -21,7 +21,7 @@ coste de servidor.
 │   ├── js/ascii-field.js          Fondo ASCII en <canvas>
 │   ├── js/main.js                 Tema, entradas por scroll, sección activa, copiar correo
 │   ├── fonts/                     Departure Mono + IBM Plex Mono (SIL OFL) y su licencia
-│   └── img/                       Favicon
+│   └── img/                       Favicon y la captura del visor (WebP)
 └── markdowns/                     Documentación de trabajo (ignorada por git, no se publica)
 ```
 
@@ -116,17 +116,18 @@ El texto está directamente en los dos HTML, sin plantillas ni i18n.
 | Nombre, rol y terminal | `index.html` y `en/index.html`, sección `.hero` |
 | Perfil | `id="perfil"` |
 | Stack | `id="stack"` (bloques `.stack-block`) |
-| Servicio social | `id="servicio"` |
-| Proyectos | `id="proyectos"`: dos grupos (`.projects__group`). El grupo en desarrollo (`.projects__group--dev`) pone sus dos tarjetas en paralelo; las concluidas van una por fila a todo el ancho. `.project__meta` es el panel de metadatos dentro de cada tarjeta |
+| Experiencia | `id="experiencia"` (el servicio social en el CIBLab) |
+| Proyectos | `id="proyectos"`: dos grupos (`.projects__group`), una tarjeta por fila a todo el ancho. `.project__meta` es el panel de metadatos dentro de cada tarjeta |
+| Captura del visor | `id="proyectos"`, figura `.captura` dentro de la tarjeta de InnovaMed AI |
 | Diagrama de arquitectura | `id="proyectos"`, bloque `.diagrama` dentro de la tarjeta del gemelo digital |
 | Contacto | `id="contacto"` |
 | Colores, tipografía, movimiento | `assets/css/style.css`, bloque *1. Tokens* |
 | Densidad y zonas del fondo | `--ascii-max` y `--ascii-margin-max` en la hoja; el ruido y el tramado en `ascii-field.js` |
 
-Las secciones van en este orden: perfil, stack, servicio social, proyectos y
+Las secciones van en este orden: perfil, stack, experiencia, proyectos y
 contacto. Si mueves una, renumera su `section__num` y su entrada en la nav.
 
-La tarjeta «Esta página» cita el peso total del sitio (226 kB). Si añades o
+La tarjeta «Esta página» cita el peso total del sitio (~270 kB). Si añades o
 quitas archivos, mide con
 `find . -type f -not -path './markdowns/*' -not -path './.git/*' -printf '%s\n' | awk '{s+=$1} END {print s/1024" kB"}'`
 y actualiza esa cifra: es una afirmación verificable y conviene que siga siéndolo.
@@ -223,6 +224,10 @@ impresión, pero el contenido se ve entero.
   unos 100 caracteres en las tarjetas a ancho completo: es más largo de lo que
   recomienda la tipografía, así que si algún día se quiere recuperar el
   equilibrio, el sitio donde poner un tope es `.bullets` y `.project__summary`.
+- **La captura del visor va en WebP a 1600 px**, no en PNG. El original pesaba
+  321 kB y en PNG a 1400 px seguía en 225 kB; en WebP con calidad 86 se queda en
+  **45 kB** y el texto de la interfaz se lee igual. Si la reemplazas:
+  `magick original.png -resize 1600x -strip -quality 86 assets/img/innovamed-visor.webp`
 - **Contraste e impresión**: los estilos de `@media print` ocultan la decoración y
   el navegador añade la URL de cada enlace, así que `Ctrl+P` da un CV en papel
   decente sin necesidad de un PDF aparte.
