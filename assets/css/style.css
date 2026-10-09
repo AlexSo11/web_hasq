@@ -570,7 +570,6 @@ main,
 
 .hero__role {
   margin-top: 1.25rem;
-  max-width: 36ch;
   font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
   color: var(--fg-2);
 }
@@ -666,7 +665,6 @@ main,
 .prose {
   display: grid;
   gap: 1.1rem;
-  max-width: 68ch;
   color: var(--fg-2);
   font-size: 1.0625rem;
 }
@@ -728,9 +726,9 @@ main,
   font-variant-numeric: tabular-nums;
 }
 
-/* Dentro de una tarjeta la medida manda: cuatro fichas en 2x2 en lugar de
-   dejar que auto-fit haga una fila de tres más un suelto. */
-.project .facts {
+/* En una tarjeta estrecha cuatro fichas caben en 2x2; a todo el ancho se
+   reparten solas en una sola fila. */
+.projects__group--dev .facts {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -841,21 +839,16 @@ main,
   gap: clamp(2rem, 5vw, 3.25rem);
 }
 
+/* Por defecto, una tarjeta por fila ocupando todo el ancho. Solo el grupo en
+   desarrollo pone sus dos proyectos en paralelo. */
 .projects__grid {
   display: grid;
   gap: clamp(1rem, 2.2vw, 1.5rem);
 }
 
 @media (min-width: 880px) {
-  .projects__grid {
+  .projects__group--dev .projects__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  /* La tarjeta más larga del grupo ocupa la fila entera. Emparejarla con una
-     corta dejaba media fila vacía y, al estirar la fila, una tarjeta hueca de
-     1500 px. Las demás siguen compartiendo fila de dos en dos. */
-  .project--destacado {
-    grid-column: 1 / -1;
   }
 }
 
@@ -871,12 +864,18 @@ main,
   background: var(--surface);
 }
 
+/* Tarjeta dentro de la tarjeta: los metadatos dejan de ser una lista y pasan a
+   ser un panel con su propio fondo, en fila y con vuelta de línea cuando no
+   caben. */
 .project__meta {
-  display: grid;
-  gap: 0.9rem;
-  align-content: start;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1.1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
 }
 
 .meta__period {
@@ -920,14 +919,12 @@ main,
 }
 
 .project__summary {
-  max-width: 62ch;
   color: var(--fg-2);
 }
 
 .bullets {
   display: grid;
   gap: 0.7rem;
-  max-width: 66ch;
 }
 
 .bullets li {
@@ -1019,7 +1016,6 @@ main,
 .callout__body {
   display: grid;
   gap: 1.1rem;
-  max-width: 62ch;
   color: var(--fg-2);
 }
 

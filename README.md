@@ -117,7 +117,7 @@ El texto está directamente en los dos HTML, sin plantillas ni i18n.
 | Perfil | `id="perfil"` |
 | Stack | `id="stack"` (bloques `.stack-block`) |
 | Servicio social | `id="servicio"` |
-| Proyectos | `id="proyectos"`: dos grupos (`.projects__group`) con su rejilla de tarjetas (`.projects__grid`) y un `<article class="project">` por proyecto |
+| Proyectos | `id="proyectos"`: dos grupos (`.projects__group`). El grupo en desarrollo (`.projects__group--dev`) pone sus dos tarjetas en paralelo; las concluidas van una por fila a todo el ancho. `.project__meta` es el panel de metadatos dentro de cada tarjeta |
 | Diagrama de arquitectura | `id="proyectos"`, bloque `.diagrama` dentro de la tarjeta del gemelo digital |
 | Contacto | `id="contacto"` |
 | Colores, tipografía, movimiento | `assets/css/style.css`, bloque *1. Tokens* |
@@ -215,6 +215,14 @@ impresión, pero el contenido se ve entero.
   `role="img"` y un `aria-label`, de modo que un lector de pantalla oye la
   descripción y no las barras. El SVG de la documentación, que pesaba 44 kB y
   traía un degradado y catorce sombras, no se publica.
+- **Sin tope de medida de línea**, también por pedido explícito: la prosa, los
+  resúmenes y los puntos de cada proyecto ocupan el ancho completo de su
+  contenedor. Se quitó el `max-width` en `ch` que traían `.prose`,
+  `.project__summary`, `.bullets`, `.hero__role` y `.callout__body`, porque
+  dejaban la mitad derecha de los recuadros vacía. A 1440 px eso da líneas de
+  unos 100 caracteres en las tarjetas a ancho completo: es más largo de lo que
+  recomienda la tipografía, así que si algún día se quiere recuperar el
+  equilibrio, el sitio donde poner un tope es `.bullets` y `.project__summary`.
 - **Contraste e impresión**: los estilos de `@media print` ocultan la decoración y
   el navegador añade la URL de cada enlace, así que `Ctrl+P` da un CV en papel
   decente sin necesidad de un PDF aparte.

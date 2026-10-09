@@ -6,7 +6,7 @@
     <title>Hector Solís · Computer Engineer</title>
     <meta
       name="description"
-      content="CV of Hector Solís, Computer Engineer based in Guadalajara. Medical imaging software: PET/CT segmentation, AI-assisted 3D DICOM viewer and access control."
+      content="CV of Hector Solís, Computer Engineer based in Guadalajara. Software end to end: services in Python, Go and Rust, web interfaces, cloud deployment and medical imaging."
     />
     <meta name="author" content="Hector Alejandro Solís Quiñones" />
     <meta name="color-scheme" content="dark light" />
@@ -16,7 +16,7 @@
     <meta property="og:title" content="Hector Solís · Computer Engineer" />
     <meta
       property="og:description"
-      content="Medical imaging software: PET/CT segmentation, AI-assisted 3D DICOM viewer and access control."
+      content="Software end to end: services in Python, Go and Rust, web interfaces, cloud deployment and medical imaging."
     />
     <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../assets/css/style.css" />
@@ -116,9 +116,10 @@
               <span>Hector Solis</span>
             </h1>
             <p class="hero__role" data-reveal>
-              Computer Engineer. I build medical imaging software: volume
-              segmentation, 3D visualisation and access control, with
-              reproducibility and compute cost treated as design constraints.
+              Computer Engineer. I build software end to end: services and APIs
+              in Python, Go and Rust, web interfaces, and container and cloud
+              deployment with continuous integration. Medical imaging taught me
+              to measure before claiming.
             </p>
             <div class="hero__actions" data-reveal>
               <a class="btn btn--primary" href="#proyectos">View projects</a>
@@ -161,12 +162,12 @@
 <span class="c">$</span> cat profile.txt
 <span class="dim">degree</span>  Computer Engineering
 <span class="dim">base</span>    Guadalajara, Jalisco, MX
-<span class="dim">focus</span>   medical imaging / DICOM
-        scientific computing
+<span class="dim">focus</span>   backend / web / deployment
+        medical imaging, data and 3D
 <span class="dim">status</span>  <span class="ok">open to collaborate</span>
 
-<span class="c">$</span> ls social-service/
-dicom-3d-viewer.md   pet-ct-segmentation.md
+<span class="c">$</span> ls projects/
+in-development/   completed/
 <span class="c">$</span> <span class="caret"></span></code></pre>
           </div>
         </div>
@@ -188,10 +189,12 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
 
           <div class="prose" data-reveal>
             <p>
-              I am a Computer Engineer based in Guadalajara, Jalisco. My work
-              centres on medical imaging software: reading DICOM with the physics
-              done correctly, segmenting volumes, meshing the resulting geometry
-              and getting it into a 3D viewer that runs in the browser.
+              I am a Computer Engineer based in Guadalajara, Jalisco. I work on
+              software end to end: services and APIs, data processing, web
+              interfaces and deployment. Medical imaging has been my most
+              demanding field, and that is where I learned to read DICOM with the
+              physics done correctly, to segment volumes and to get the resulting
+              geometry into a 3D viewer that runs in the browser.
             </p>
             <p>
               During my social service at the
@@ -306,6 +309,7 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
                 <li>Kubernetes</li>
                 <li>Redis</li>
                 <li>nginx</li>
+                <li>Cloudflare Pages</li>
                 <li>Linux</li>
                 <li>Git</li>
               </ul>
@@ -420,7 +424,7 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
 
           <div class="projects" data-reveal>
             <section
-              class="projects__group"
+              class="projects__group projects__group--dev"
               aria-labelledby="proyectos-en-desarrollo"
             >
               <h3 class="projects__group-title" id="proyectos-en-desarrollo">
@@ -429,15 +433,10 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
 
               <div class="projects__grid">
               <article class="project">
-                <div class="project__meta">
-                  <p class="meta__period">2026B · in progress</p>
-                  <p class="meta__role">
-                    Technical lead: architecture, integration and deployment
-                  </p>
-                  <p class="meta__org">CUCEI · University of Guadalajara</p>
-                  <div>
-                    <span class="meta__label">Stack</span>
-                    <ul class="chips">
+                              <div class="project__meta">
+                <p class="meta__period">2026B · in progress</p>
+                <p class="meta__org">CUCEI · University of Guadalajara</p>
+<ul class="chips">
                       <li>C++</li>
                       <li>Go</li>
                       <li>Python</li>
@@ -448,8 +447,7 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
                       <li>ONNX</li>
                       <li>OpenMP</li>
                     </ul>
-                  </div>
-                </div>
+              </div>
 
                 <div class="project__body">
                   <h4 class="project__title">
@@ -459,7 +457,8 @@ dicom-3d-viewer.md   pet-ct-segmentation.md
                     A state orchestrator that keeps a digital replica of the
                     terrain in sync with live telemetry, to work out how much
                     water will pool and where it will run before a critical storm
-                    hits. A team of five.
+                    hits. A team of five, with architecture and integration in
+                    my hands.
                   </p>
 
                   <dl class="facts">
@@ -549,13 +548,10 @@ sources
               </article>
 
               <article class="project">
-                <div class="project__meta">
-                  <p class="meta__period">2026 · in progress</p>
-                  <p class="meta__role">Pipeline design and development</p>
+                              <div class="project__meta">
+                <p class="meta__period">2026 · in progress</p>
                 <p class="meta__org">CIBLab · University of Guadalajara</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Python</li>
                     <li>Rust</li>
                     <li>FastAPI</li>
@@ -564,7 +560,6 @@ sources
                     <li>NumPy</li>
                     <li>Docker</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -654,16 +649,11 @@ sources
               </h3>
 
               <div class="projects__grid">
-            <article class="project project--destacado">
-              <div class="project__meta">
+            <article class="project">
+                            <div class="project__meta">
                 <p class="meta__period">2026 · completed</p>
-                <p class="meta__role">
-                  Migration to Django, 3D viewer and AI engines
-                </p>
                 <p class="meta__org">CIBLab · University of Guadalajara</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Django</li>
                     <li>Python</li>
                     <li>VTK.js</li>
@@ -672,7 +662,6 @@ sources
                     <li>SimpleITK</li>
                     <li>Docker</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -750,19 +739,15 @@ sources
             </article>
 
             <article class="project">
-              <div class="project__meta">
+                            <div class="project__meta">
                 <p class="meta__period">2026</p>
-                <p class="meta__role">Design and development</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Python</li>
                     <li>Tkinter</li>
                     <li>PostgreSQL</li>
                     <li>MySQL</li>
                     <li>Pillow</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -797,18 +782,14 @@ sources
             </article>
 
             <article class="project">
-              <div class="project__meta">
+                            <div class="project__meta">
                 <p class="meta__period">2026</p>
-                <p class="meta__role">Design and development</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Python</li>
                     <li>Tkinter</li>
                     <li>MySQL</li>
                     <li>hashlib</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -843,17 +824,13 @@ sources
             </article>
 
             <article class="project">
-              <div class="project__meta">
+                            <div class="project__meta">
                 <p class="meta__period">2026</p>
-                <p class="meta__role">Design and development</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Python</li>
                     <li>CustomTkinter</li>
                     <li>MySQL</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -888,17 +865,13 @@ sources
             </article>
 
             <article class="project">
-              <div class="project__meta">
+                            <div class="project__meta">
                 <p class="meta__period">2026</p>
-                <p class="meta__role">Design and development</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>HTML</li>
                     <li>CSS</li>
                     <li>JavaScript</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -910,7 +883,7 @@ sources
                 </p>
                 <ul class="bullets">
                   <li>
-                    <b>226 kB</b> in total, fonts included, and no third-party
+                    <b>~225 kB</b> in total, fonts included, and no third-party
                     requests.
                   </li>
                   <li>

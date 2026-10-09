@@ -39,7 +39,7 @@
      las manchas del ruido. */
   var BAYER = new Float32Array(64);
 
-  var FOCUS_PX = 170; // radio del foco del puntero
+  var FOCUS_PX = 100; // radio del foco del puntero
   var EDGE_FADE = 80; // px de transición entre columna y margen
   var HEAT_DECAY = 0.95; // por tic; media vida de unos 450 ms
   var HEAT_EPSILON = 0.02;

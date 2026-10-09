@@ -6,7 +6,7 @@
     <title>Hector Solis · Ing. en Computación</title>
     <meta
       name="description"
-      content="CV de Hector Solís, Ingeniero en Computación en Guadalajara. Software de imagen médica: segmentación PET/CT, visor DICOM 3D con IA y control de acceso."
+      content="CV de Hector Solís, Ingeniero en Computación en Guadalajara. Software de extremo a extremo: servicios en Python, Go y Rust, interfaces web, despliegue en la nube e imagen médica."
     />
     <meta name="author" content="Hector Alejandro Solís Quiñones" />
     <meta name="color-scheme" content="dark light" />
@@ -16,7 +16,7 @@
     <meta property="og:title" content="Hector Solís · Ing. en Computación" />
     <meta
       property="og:description"
-      content="Software de imagen médica: segmentación PET/CT, visor DICOM 3D con IA y control de acceso."
+      content="Software de extremo a extremo: servicios en Python, Go y Rust, interfaces web, despliegue en la nube e imagen médica."
     />
     <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/css/style.css" />
@@ -116,10 +116,10 @@
               <span>Hector Solis</span>
             </h1>
             <p class="hero__role" data-reveal>
-              Ingeniero en Computación. Construyo software para imagen médica:
-              segmentación de volúmenes, visualización 3D y control de acceso,
-              con la reproducibilidad y el coste de cómputo como restricciones
-              de diseño.
+              Ingeniero en Computación. Construyo software de extremo a extremo:
+              servicios y APIs en Python, Go y Rust, interfaces web, y despliegue
+              en contenedores y en la nube con integración continua. La imagen
+              médica me enseñó a medir antes de afirmar.
             </p>
             <div class="hero__actions" data-reveal>
               <a class="btn btn--primary" href="#proyectos">Ver proyectos</a>
@@ -162,12 +162,12 @@
 <span class="c">$</span> cat perfil.txt
 <span class="dim">titulo</span>  Ing. en Computación
 <span class="dim">base</span>    Guadalajara, Jalisco, MX
-<span class="dim">foco</span>    imagen médica / DICOM
-        cómputo científico
+<span class="dim">foco</span>    backend / web / despliegue
+        imagen médica, datos y 3D
 <span class="dim">estado</span>  <span class="ok">abierto a colaborar</span>
 
-<span class="c">$</span> ls servicio-social/
-visor-dicom-3d.md   segmentacion-pet-ct.md
+<span class="c">$</span> ls proyectos/
+en-desarrollo/   concluidos/
 <span class="c">$</span> <span class="caret"></span></code></pre>
           </div>
         </div>
@@ -189,10 +189,12 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
 
           <div class="prose" data-reveal>
             <p>
-              Soy Ingeniero en Computación y vivo en Guadalajara, Jalisco. Mi
-              trabajo se concentra en software de imagen médica: leer DICOM con
-              la física correcta, segmentar volúmenes, mallar la geometría
-              resultante y llevarla a un visor 3D que corre en el navegador.
+              Soy Ingeniero en Computación y vivo en Guadalajara, Jalisco.
+              Trabajo en software de extremo a extremo: servicios y APIs,
+              procesamiento de datos, interfaces web y despliegue. La imagen
+              médica ha sido mi campo más exigente, y ahí aprendí a leer DICOM
+              con la física correcta, segmentar volúmenes y llevar la geometría
+              resultante a un visor 3D que corre en el navegador.
             </p>
             <p>
               Durante mi servicio social en el
@@ -309,6 +311,7 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
                 <li>Kubernetes</li>
                 <li>Redis</li>
                 <li>nginx</li>
+                <li>Cloudflare Pages</li>
                 <li>Linux</li>
                 <li>Git</li>
               </ul>
@@ -423,7 +426,7 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
 
           <div class="projects" data-reveal>
             <section
-              class="projects__group"
+              class="projects__group projects__group--dev"
               aria-labelledby="proyectos-en-desarrollo"
             >
               <h3 class="projects__group-title" id="proyectos-en-desarrollo">
@@ -432,15 +435,10 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
 
               <div class="projects__grid">
               <article class="project">
-                <div class="project__meta">
-                  <p class="meta__period">2026B · en curso</p>
-                  <p class="meta__role">
-                    Líder técnico: arquitectura, integración y despliegue
-                  </p>
-                  <p class="meta__org">CUCEI · Universidad de Guadalajara</p>
-                  <div>
-                    <span class="meta__label">Stack</span>
-                    <ul class="chips">
+                              <div class="project__meta">
+                <p class="meta__period">2026B · en curso</p>
+                <p class="meta__org">CUCEI · Universidad de Guadalajara</p>
+<ul class="chips">
                       <li>C++</li>
                       <li>Go</li>
                       <li>Python</li>
@@ -451,8 +449,7 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
                       <li>ONNX</li>
                       <li>OpenMP</li>
                     </ul>
-                  </div>
-                </div>
+              </div>
 
                 <div class="project__body">
                   <h4 class="project__title">
@@ -462,7 +459,8 @@ visor-dicom-3d.md   segmentacion-pet-ct.md
                     Orquestador de estado que mantiene una réplica digital del
                     terreno sincronizada con la telemetría real, para calcular
                     cuánta agua se acumulará y hacia dónde correrá antes de que
-                    empiece una tormenta crítica. Equipo de cinco personas.
+                    empiece una tormenta crítica. Equipo de cinco personas, con
+                    la arquitectura y la integración a mi cargo.
                   </p>
 
                   <dl class="facts">
@@ -552,13 +550,10 @@ fuentes
               </article>
 
               <article class="project">
-                <div class="project__meta">
-                  <p class="meta__period">2026 · en curso</p>
-                  <p class="meta__role">Diseño y desarrollo del pipeline</p>
+                              <div class="project__meta">
+                <p class="meta__period">2026 · en curso</p>
                 <p class="meta__org">CIBLab · Universidad de Guadalajara</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Python</li>
                     <li>Rust</li>
                     <li>FastAPI</li>
@@ -567,7 +562,6 @@ fuentes
                     <li>NumPy</li>
                     <li>Docker</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -655,16 +649,11 @@ fuentes
               </h3>
 
               <div class="projects__grid">
-            <article class="project project--destacado">
-              <div class="project__meta">
+            <article class="project">
+                            <div class="project__meta">
                 <p class="meta__period">2026 · concluido</p>
-                <p class="meta__role">
-                  Migración a Django, visor 3D y motores de IA
-                </p>
                 <p class="meta__org">CIBLab · Universidad de Guadalajara</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Django</li>
                     <li>Python</li>
                     <li>VTK.js</li>
@@ -673,7 +662,6 @@ fuentes
                     <li>SimpleITK</li>
                     <li>Docker</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -753,19 +741,15 @@ fuentes
             </article>
 
             <article class="project">
-              <div class="project__meta">
+                            <div class="project__meta">
                 <p class="meta__period">2026</p>
-                <p class="meta__role">Diseño y desarrollo</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Python</li>
                     <li>Tkinter</li>
                     <li>PostgreSQL</li>
                     <li>MySQL</li>
                     <li>Pillow</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -801,18 +785,14 @@ fuentes
             </article>
 
             <article class="project">
-              <div class="project__meta">
+                            <div class="project__meta">
                 <p class="meta__period">2026</p>
-                <p class="meta__role">Diseño y desarrollo</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Python</li>
                     <li>Tkinter</li>
                     <li>MySQL</li>
                     <li>hashlib</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -847,17 +827,13 @@ fuentes
             </article>
 
             <article class="project">
-              <div class="project__meta">
+                            <div class="project__meta">
                 <p class="meta__period">2026</p>
-                <p class="meta__role">Diseño y desarrollo</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>Python</li>
                     <li>CustomTkinter</li>
                     <li>MySQL</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -892,17 +868,13 @@ fuentes
             </article>
 
             <article class="project">
-              <div class="project__meta">
+                            <div class="project__meta">
                 <p class="meta__period">2026</p>
-                <p class="meta__role">Diseño y desarrollo</p>
-                <div>
-                  <span class="meta__label">Stack</span>
-                  <ul class="chips">
+<ul class="chips">
                     <li>HTML</li>
                     <li>CSS</li>
                     <li>JavaScript</li>
                   </ul>
-                </div>
               </div>
 
               <div class="project__body">
@@ -914,7 +886,7 @@ fuentes
                 </p>
                 <ul class="bullets">
                   <li>
-                    <b>226 kB</b> en total, fuentes incluidas, y cero peticiones a
+                    <b>~225 kB</b> en total, fuentes incluidas, y cero peticiones a
                     terceros.
                   </li>
                   <li>
