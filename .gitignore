@@ -1,0 +1,8 @@
+# Documentación de trabajo de los dos proyectos médicos.
+# No se publica: un hosting estático sirve los .md como texto plano y
+# quedarían expuestos el changelog y las notas de seguridad del visor.
+markdowns/
+
+# Ruido del sistema operativo
+.DS_Store
+Thumbs.db

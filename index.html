@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hector Alejandro Solís Quiñones — Ing. en Computación</title>
+    <meta
+      name="description"
+      content="CV de Hector Alejandro Solís Quiñones, Ingeniero en Computación en Guadalajara. Software de imagen médica: segmentación PET/CT, visor DICOM 3D con IA y control de acceso."
+    />
+    <meta name="author" content="Hector Alejandro Solís Quiñones" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0a0d10" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:title" content="Hector Alejandro Solís Quiñones — Ing. en Computación" />
+    <meta
+      property="og:description"
+      content="Software de imagen médica: segmentación PET/CT, visor DICOM 3D con IA y control de acceso."
+    />
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      (function () {
+        var theme = null;
+        try {
+          theme = window.localStorage.getItem("hasq-theme");
+        } catch (error) {
+          theme = null;
+        }
+        if (theme !== "light" && theme !== "dark") {
+          theme = window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <canvas id="ascii-field" aria-hidden="true"></canvas>
+
+    <header class="topbar">
+      <div class="wrap topbar__in">
+        <a class="brand" href="#top">
+          <span class="brand__tilde" aria-hidden="true">~</span>hsolis
+        </a>
+
+        <nav class="nav" aria-label="Secciones">
+          <a href="#perfil">perfil</a>
+          <a href="#stack">stack</a>
+          <a href="#proyectos">proyectos</a>
+          <a href="#servicio">servicio social</a>
+          <a href="#contacto">contacto</a>
+        </nav>
+
+        <div class="topbar__actions">
+          <div class="lang">
+            <a href="index.html" hreflang="es" aria-current="page">ES</a>
+            <a href="en/index.html" hreflang="en" lang="en">EN</a>
+          </div>
+
+          <!-- data-label-light / data-label-dark describen la acción según el
+               tema activo, no el icono que se ve. -->
+          <button
+            class="icon-btn"
+            id="theme-toggle"
+            type="button"
+            aria-pressed="false"
+            data-label-light="Cambiar a tema oscuro"
+            data-label-dark="Cambiar a tema claro"
+          >
+            <span class="icon-btn__icons">
+              <svg
+                class="icon-moon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M20.5 14.8A8.8 8.8 0 0 1 9.2 3.5a8.8 8.8 0 1 0 11.3 11.3Z" />
+              </svg>
+              <svg
+                class="icon-sun"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path
+                  d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="wrap hero__in">
+          <div>
+            <p class="eyebrow">CV · Guadalajara, Jalisco</p>
+            <h1 class="hero__name">
+              <span>Hector Alejandro</span>
+              <span>Solís Quiñones</span>
+            </h1>
+            <p class="hero__role">
+              Ingeniero en Computación. Construyo software para imagen médica:
+              segmentación de volúmenes, visualización 3D y control de acceso,
+              con la reproducibilidad y el coste de cómputo como restricciones
+              de diseño.
+            </p>
+            <div class="hero__actions">
+              <a class="btn btn--primary" href="#proyectos">Ver proyectos</a>
+              <a
+                class="btn"
+                href="https://github.com/AlexSo11"
+                target="_blank"
+                rel="me noopener"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.41-5.25 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.2.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"
+                  />
+                </svg>
+                GitHub
+              </a>
+              <a class="btn btn--quiet" href="mailto:ha.solis.q@gmail.com">
+                Escribirme
+              </a>
+            </div>
+          </div>
+
+          <div class="terminal">
+            <div class="terminal__bar">
+              <span class="terminal__dots" aria-hidden="true">
+                <i></i><i></i><i></i>
+              </span>
+              <span class="terminal__title">perfil — zsh</span>
+            </div>
+            <pre class="terminal__body"><code><span class="c">$</span> whoami
+<b>Hector Alejandro Solís Quiñones</b>
+
+<span class="c">$</span> cat perfil.txt
+<span class="dim">titulo</span>  Ing. en Computación
+<span class="dim">base</span>    Guadalajara, Jalisco, MX
+<span class="dim">foco</span>    imagen médica / DICOM
+        cómputo científico
+<span class="dim">estado</span>  <span class="ok">abierto a colaborar</span>
+
+<span class="c">$</span> ls servicio-social/
+visor-dicom-3d.md   segmentacion-pet-ct.md
+<span class="c">$</span> <span class="caret"></span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="perfil" aria-labelledby="perfil-title">
+        <div class="wrap">
+          <div class="section__head">
+            <h2 class="section__title" id="perfil-title">
+              <span class="section__num" aria-hidden="true">01</span> Perfil
+            </h2>
+            <p class="section__note">Quién soy y en qué trabajo.</p>
+          </div>
+
+          <div class="prose">
+            <p>
+              Soy Ingeniero en Computación y vivo en Guadalajara, Jalisco. Mi
+              trabajo se concentra en software de imagen médica: leer DICOM con
+              la física correcta, segmentar volúmenes, mallar la geometría
+              resultante y llevarla a un visor 3D que corre en el navegador.
+            </p>
+            <p>
+              Durante mi servicio social en el
+              <strong>Computer Intelligence and Biorobotics Lab (CIBLab)</strong>
+              de la Universidad de Guadalajara desarrollé dos proyectos que se
+              complementan: un visor DICOM web con segmentación asistida por
+              inteligencia artificial y un pipeline de segmentación PET/CT sin
+              aprendizaje automático, construido sobre supervóxeles 3D y
+              optimización metaheurística.
+            </p>
+            <p>
+              Trabajo con una regla simple:
+              <strong>lo que no está medido no está resuelto</strong>. Los dos
+              proyectos tienen suites de pruebas, presupuestos de rendimiento
+              que se comprueban en integración continua y documentos que
+              registran cada decisión de diseño junto con su justificación.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="stack" aria-labelledby="stack-title">
+        <div class="wrap">
+          <div class="section__head">
+            <h2 class="section__title" id="stack-title">
+              <span class="section__num" aria-hidden="true">02</span> Stack
+            </h2>
+            <p class="section__note">
+              Herramientas que uso y con las que he trabajado a fondo en estos
+              proyectos.
+            </p>
+          </div>
+
+          <div class="stack-grid">
+            <div class="stack-block">
+              <h3 class="stack-block__title">Lenguajes</h3>
+              <ul class="chips">
+                <li>Python</li>
+                <li>Rust</li>
+                <li>TypeScript</li>
+                <li>JavaScript</li>
+                <li>Java</li>
+                <li>SQL</li>
+              </ul>
+            </div>
+
+            <div class="stack-block">
+              <h3 class="stack-block__title">Backend y datos</h3>
+              <ul class="chips">
+                <li>FastAPI</li>
+                <li>Granian</li>
+                <li>Django</li>
+                <li>SQLAlchemy</li>
+                <li>Alembic</li>
+                <li>SQLite</li>
+                <li>axum</li>
+              </ul>
+            </div>
+
+            <div class="stack-block">
+              <h3 class="stack-block__title">Frontend</h3>
+              <ul class="chips">
+                <li>Svelte 5</li>
+                <li>Vite</li>
+                <li>three.js</li>
+                <li>VTK.js</li>
+                <li>WebGL</li>
+                <li>HTML y CSS</li>
+              </ul>
+            </div>
+
+            <div class="stack-block">
+              <h3 class="stack-block__title">Imagen médica y cómputo</h3>
+              <ul class="chips">
+                <li>pydicom</li>
+                <li>NumPy</li>
+                <li>SciPy</li>
+                <li>scikit-image</li>
+                <li>SimpleITK</li>
+                <li>PyTorch</li>
+                <li>MONAI</li>
+                <li>trimesh</li>
+              </ul>
+            </div>
+
+            <div class="stack-block">
+              <h3 class="stack-block__title">Calidad</h3>
+              <ul class="chips">
+                <li>pytest</li>
+                <li>Vitest</li>
+                <li>Playwright</li>
+                <li>axe</li>
+                <li>ruff</li>
+                <li>mypy</li>
+                <li>clippy</li>
+                <li>GitHub Actions</li>
+              </ul>
+            </div>
+
+            <div class="stack-block">
+              <h3 class="stack-block__title">Infraestructura</h3>
+              <ul class="chips">
+                <li>Docker</li>
+                <li>Docker Compose</li>
+                <li>nginx</li>
+                <li>Linux</li>
+                <li>Git</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="proyectos" aria-labelledby="proyectos-title">
+        <div class="wrap">
+          <div class="section__head">
+            <h2 class="section__title" id="proyectos-title">
+              <span class="section__num" aria-hidden="true">03</span> Proyectos
+            </h2>
+            <p class="section__note">
+              Los dos entregables de mi servicio social en CIBLab. El código es
+              privado; con gusto lo recorro contigo en una entrevista.
+            </p>
+          </div>
+
+          <div class="projects">
+            <article class="project">
+              <div class="project__meta">
+                <p class="meta__period">2026</p>
+                <p class="meta__role">Diseño y desarrollo del pipeline</p>
+                <p class="meta__org">CIBLab · Universidad de Guadalajara</p>
+                <div>
+                  <span class="meta__label">Stack</span>
+                  <ul class="chips">
+                    <li>Python</li>
+                    <li>Rust</li>
+                    <li>FastAPI</li>
+                    <li>Svelte 5</li>
+                    <li>three.js</li>
+                    <li>NumPy</li>
+                    <li>Docker</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="project__body">
+                <h3 class="project__title">
+                  Segmentación PET/CT con supervóxeles 3D y optimización
+                  metaheurística
+                </h3>
+                <p class="project__summary">
+                  Reescritura completa de un pipeline de segmentación de estudios
+                  PET/CT: sustituye la umbralización sobre histogramas 1D por una
+                  segmentación espacialmente consciente, sin aprendizaje
+                  automático y con cada resultado rastreable hasta su ecuación.
+                </p>
+
+                <dl class="facts">
+                  <div class="facts__item">
+                    <dt>Pruebas</dt>
+                    <dd>435</dd>
+                  </div>
+                  <div class="facts__item">
+                    <dt>Mallado en Rust</dt>
+                    <dd>39×</dd>
+                  </div>
+                  <div class="facts__item">
+                    <dt>Pipeline espacial</dt>
+                    <dd>16.5 s</dd>
+                  </div>
+                  <div class="facts__item">
+                    <dt>GLB final</dt>
+                    <dd>2.5 MB</dd>
+                  </div>
+                </dl>
+
+                <ul class="bullets">
+                  <li>
+                    Co-registro PET→CT por <b>B-spline cúbico</b> y agrupamiento
+                    en <b>supervóxeles SLIC 3D</b> con la distancia espacial
+                    medida en milímetros, para no aplanar volúmenes anisótropos.
+                  </li>
+                  <li>
+                    Optimización <b>CCO N-dimensional</b> sobre el vector
+                    [HU, SUV, X, Y, Z, |∇HU|]. Con siembra aleatoria el enjambre
+                    colapsaba centroides y el IoU por clase caía a 0.33; con
+                    siembra k-means++ llega a <b>1.0</b> con el mismo presupuesto
+                    de evaluaciones.
+                  </li>
+                  <li>
+                    Kernel de mallado en Rust con equivalencia de
+                    <b>caras y vértices idénticos</b> frente a NumPy:
+                    <b>20.5 s a 0.53 s</b> (unas 39 veces más rápido), incluido
+                    el transporte de la máscara empaquetada a 1 bit por vóxel.
+                  </li>
+                  <li>
+                    Rejilla de trabajo <b>por eje</b> en lugar de reducción
+                    uniforme: sobre un estudio real de 512×512×343 la anisotropía
+                    baja de 2.56 a 1.56 y el ruido topológico de 0.060 a 0.046.
+                  </li>
+                  <li>
+                    Visor three.js que decide umbral y color <b>en el cliente</b>:
+                    el GLB lleva escalares por vértice (<code>_SUV</code>,
+                    <code>_HU</code>, <code>_REGION</code>) y no color horneado,
+                    así que recolorear no invalida el hash del artefacto.
+                  </li>
+                  <li>
+                    Tres defectos reales de la versión anterior, encontrados y
+                    corregidos: entropía cruzada idénticamente cero, dosis en
+                    MBq leída como Bq y hora de inyección anclada a 1900.
+                  </li>
+                </ul>
+
+                <p class="project__links">
+                  <a
+                    class="link"
+                    href="https://ciblab.github.io/index.html"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Proyecto del CIBLab
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="square"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M13.5 4.5h6v6" />
+                      <path d="M19.5 4.5 11 13" />
+                      <path d="M18 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1H10" />
+                    </svg>
+                  </a>
+                  <span class="meta__org">Repositorio privado</span>
+                </p>
+              </div>
+            </article>
+
+            <article class="project">
+              <div class="project__meta">
+                <p class="meta__period">2026</p>
+                <p class="meta__role">
+                  Migración a Django, visor 3D y motores de IA
+                </p>
+                <p class="meta__org">CIBLab · Universidad de Guadalajara</p>
+                <div>
+                  <span class="meta__label">Stack</span>
+                  <ul class="chips">
+                    <li>Django</li>
+                    <li>Python</li>
+                    <li>VTK.js</li>
+                    <li>PyTorch</li>
+                    <li>MONAI</li>
+                    <li>SimpleITK</li>
+                    <li>Docker</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="project__body">
+                <h3 class="project__title">
+                  InnovaMed AI — visor DICOM web con segmentación asistida por IA
+                </h3>
+                <p class="project__summary">
+                  Plataforma web para visualizar, segmentar, anonimizar y
+                  exportar estudios DICOM de CT y RM. El procesado y la
+                  inferencia corren en el servidor; el render 3D y la
+                  interacción, en el navegador.
+                </p>
+
+                <dl class="facts">
+                  <div class="facts__item">
+                    <dt>Pruebas</dt>
+                    <dd>110</dd>
+                  </div>
+                  <div class="facts__item">
+                    <dt>Motores de IA</dt>
+                    <dd>3</dd>
+                  </div>
+                  <div class="facts__item">
+                    <dt>Volumen 3D</dt>
+                    <dd>12.7 -&gt; 1.67 s</dd>
+                  </div>
+                  <div class="facts__item">
+                    <dt>Exportación</dt>
+                    <dd>NRRD · DICOM</dd>
+                  </div>
+                </dl>
+
+                <ul class="bullets">
+                  <li>
+                    Migración del servidor Flask a <b>Django</b> conservando
+                    rutas, códigos de estado y la forma exacta de cada respuesta
+                    JSON, con aplicaciones separadas para el visor, las cuentas y
+                    los motores de IA.
+                  </li>
+                  <li>
+                    Render 3D en el navegador con <b>VTK.js</b> (volumétrico, MIP
+                    e isosuperficie) remuestreado por <b>espaciado físico</b>,
+                    para no degradar los ejes gruesos de la adquisición.
+                  </li>
+                  <li>
+                    Tres motores de segmentación automática (Swin-UNETR,
+                    SegResNet y TotalSegmentator) con
+                    <b>compatibilidad declarada por modalidad y formato</b>: el
+                    visor oculta los que no aplican en lugar de dejar que fallen
+                    al invocarlos.
+                  </li>
+                  <li>
+                    Inferencia en subproceso aislado con <b>progreso real por
+                    etapas, cancelación y timeout</b>; la sonda de hardware usa
+                    <code>find_spec</code> para no cargar PyTorch —entre 1 y
+                    2 GB— dentro del proceso web.
+                  </li>
+                  <li>
+                    <code>/api/volume_data</code> de <b>12.7 s a 1.67 s</b> con
+                    compresión en nivel 1, caché por revisión del volumen y
+                    validadores <code>ETag</code> y <code>Cache-Control</code>
+                    que devuelven <b>304</b> en lugar de retransmitir 80 MB en
+                    cada reconstrucción de la escena.
+                  </li>
+                  <li>
+                    Flujo de acceso completo: solicitud pública con folio, panel
+                    de revisión con <b>cupo configurable</b> y registro por
+                    invitación, con motivo obligatorio al rechazar y trazabilidad
+                    del revisor.
+                  </li>
+                </ul>
+
+                <p class="project__links">
+                  <a
+                    class="link"
+                    href="https://ciblab.github.io/index.html"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Proyecto del CIBLab
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="square"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M13.5 4.5h6v6" />
+                      <path d="M19.5 4.5 11 13" />
+                      <path d="M18 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1H10" />
+                    </svg>
+                  </a>
+                  <span class="meta__org">Repositorio privado</span>
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="servicio" aria-labelledby="servicio-title">
+        <div class="wrap">
+          <div class="section__head">
+            <h2 class="section__title" id="servicio-title">
+              <span class="section__num" aria-hidden="true">04</span> Servicio
+              social
+            </h2>
+            <p class="section__note">Dónde lo hice y qué entregué.</p>
+          </div>
+
+          <div class="callout">
+            <div class="callout__body">
+              <h3 class="callout__title">
+                Computer Intelligence and Biorobotics Lab (CIBLab)
+              </h3>
+              <p>
+                Hice mi servicio social en el <strong>CIBLab</strong>, laboratorio
+                de la Universidad de Guadalajara dedicado a la inteligencia
+                artificial aplicada a medicina, biología, agronomía, robótica,
+                procesos industriales y energía. Ahí desarrollé los dos proyectos
+                de arriba, del diseño del algoritmo a las pruebas y el despliegue.
+              </p>
+              <p>
+                El laboratorio combina <strong>aprendizaje automático y métodos
+                metaheurísticos</strong>, y esa mezcla se ve en los dos
+                entregables: uno segmenta con redes neuronales y el otro resuelve
+                el mismo tipo de problema con optimización matemática pura, sin
+                entrenamiento previo ni datos de entrenamiento.
+              </p>
+              <p>
+                <a
+                  class="link"
+                  href="https://ciblab.github.io/index.html"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Visitar la página del laboratorio
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="square"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M13.5 4.5h6v6" />
+                    <path d="M19.5 4.5 11 13" />
+                    <path d="M18 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1H10" />
+                  </svg>
+                </a>
+              </p>
+            </div>
+
+            <dl class="stack-list">
+              <div>
+                <dt>Institución</dt>
+                <dd>Universidad de Guadalajara</dd>
+              </div>
+              <div>
+                <dt>Laboratorio</dt>
+                <dd>Computer Intelligence and Biorobotics Lab</dd>
+              </div>
+              <div>
+                <dt>Periodo</dt>
+                <dd>Febrero 2026 — octubre 2026</dd>
+              </div>
+              <div>
+                <dt>Entregables</dt>
+                <dd>Visor DICOM con IA y pipeline de segmentación PET/CT</dd>
+              </div>
+              <div>
+                <dt>Página</dt>
+                <dd>ciblab.github.io</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="contacto" aria-labelledby="contacto-title">
+        <div class="wrap">
+          <div class="section__head">
+            <h2 class="section__title" id="contacto-title">
+              <span class="section__num" aria-hidden="true">05</span> Contacto
+            </h2>
+            <p class="section__note">
+              Abierto a colaborar en software, imagen médica y cómputo
+              científico.
+            </p>
+          </div>
+
+          <div class="prose">
+            <p>
+              La vía más rápida es el correo. También puedes escribirme por
+              LinkedIn o revisar el código público en GitHub.
+            </p>
+          </div>
+
+          <div class="contact__actions">
+            <a class="btn btn--primary" href="mailto:ha.solis.q@gmail.com">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <rect x="2.75" y="4.75" width="18.5" height="14.5" rx="2" />
+                <path d="m3.5 7 8.5 6 8.5-6" />
+              </svg>
+              ha.solis.q@gmail.com
+            </a>
+
+            <button
+              class="btn"
+              type="button"
+              id="copy-email"
+              data-email="ha.solis.q@gmail.com"
+              data-copied="Correo copiado"
+              data-failed="No se pudo copiar; selecciónalo a mano"
+            >
+              <span class="icon-swap" aria-hidden="true">
+                <svg
+                  class="icon-copy"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  focusable="false"
+                >
+                  <rect x="9" y="9" width="11.5" height="11.5" rx="2" />
+                  <path d="M6 15H4.5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1H15a1 1 0 0 1 1 1V6" />
+                </svg>
+                <svg
+                  class="icon-check"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="square"
+                  focusable="false"
+                >
+                  <path d="m4.5 12.5 5 5 10-11" />
+                </svg>
+              </span>
+              Copiar correo
+            </button>
+
+            <a
+              class="btn"
+              href="https://www.linkedin.com/in/alejandro-qui%C3%B1ones-366648366"
+              target="_blank"
+              rel="me noopener"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13Zm1.78 13.02H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"
+                />
+              </svg>
+              LinkedIn
+            </a>
+
+            <a
+              class="btn"
+              href="https://github.com/AlexSo11"
+              target="_blank"
+              rel="me noopener"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.41-5.25 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.2.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"
+                />
+              </svg>
+              GitHub
+            </a>
+          </div>
+
+          <p class="visually-hidden" id="copy-status" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__in">
+        <p>Hector Alejandro Solís Quiñones · Guadalajara, Jalisco</p>
+        <p>HTML, CSS y un campo ASCII. Sin build, sin dependencias, sin rastreo.</p>
+        <p>
+          © <span id="year">2026</span> ·
+          <a href="#top">Volver arriba</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/js/ascii-field.js" defer></script>
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>
