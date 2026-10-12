@@ -1,0 +1,16 @@
+# Archivos del repositorio que NO deben publicarse como estáticos.
+#
+# Los assets son la raíz del repositorio, así que sin esta lista también se
+# subirían el README, la configuración de wrangler y el propio código del
+# Worker. `_headers` NO va aquí: Cloudflare lo lee para aplicar las cabeceras.
+.gitignore
+.assetsignore
+.nojekyll
+README.md
+ACTIVAR-FORMULARIO.md
+wrangler.jsonc
+wrangler.toml
+src/
+markdowns/
+.dev.vars
+.wrangler/

@@ -1,29 +1,29 @@
 /*
- * Formulario de contacto: valida, comprueba Turnstile y envía por Resend.
+ * Worker del sitio: sirve los archivos estáticos y atiende el formulario.
  *
- * Esta es la única pieza del sitio que no es estática. Es una Pages Function y
- * entra en el plan gratuito de Cloudflare: las peticiones cuentan contra las
- * 100.000 diarias de Workers y los archivos estáticos siguen siendo gratis.
+ * Por qué no sirve la carpeta `functions/`: eso es una convención de Cloudflare
+ * Pages. En un Worker el enrutado lo decide este archivo, así que el formulario
+ * vive aquí y el resto va al binding de assets.
  *
- * Variables de entorno que necesita (Pages → Settings → Environment variables):
+ * Variables de entorno (Workers & Pages → tu Worker → Settings → Variables and
+ * Secrets):
  *   RESEND_API_KEY    secreto. Clave de https://resend.com/api-keys
  *   CONTACT_FROM      texto.   Remitente verificado, p. ej.
- *                              "Portafolio <contacto@tudominio.com>"
+ *                              "Portafolio <contacto@hasq.dev>"
  *   CONTACT_TO        texto.   Destinatario, p. ej. ha.solis.q@gmail.com
  *   TURNSTILE_SECRET  secreto. Clave secreta del widget de Turnstile
  *
- * La clave de Resend nunca sale de aquí: el navegador no la ve en ningún
- * momento, que es justo el motivo de que esto sea una función y no una llamada
- * directa desde la página.
+ * La clave de Resend no sale nunca de aquí: el navegador no la ve en ningún
+ * momento, que es justo el motivo de que esto sea código de servidor.
  */
 
 const LIMITES = { nombre: 80, correo: 120, mensaje: 2000 };
 const CUERPO_MAXIMO = 8192; // bytes; por encima de esto ni se parsea
 const CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-/* Limitador de mejor esfuerzo. Cada isolate tiene su propio mapa y hay muchos
- * isolates, así que esto frena a un bot torpe pero no es una garantía: quien de
- * verdad protege el cupo de 100 correos al día es Turnstile. */
+/* Limitador de mejor esfuerzo. Cada isolate tiene su propio mapa y hay muchos,
+ * así que esto frena a un bot torpe pero no es una garantía: quien de verdad
+ * protege el cupo de 100 correos al día es Turnstile. */
 const golpes = new Map();
 const VENTANA = 10 * 60 * 1000;
 const MAXIMO_POR_VENTANA = 5;
@@ -42,6 +42,8 @@ function limitado(ip) {
   return registro.cuenta > MAXIMO_POR_VENTANA;
 }
 
+/* Las cabeceras de `_headers` se aplican a los archivos estáticos, no a lo que
+ * responde el Worker, así que aquí van explícitas. */
 function json(cuerpo, estado) {
   return new Response(JSON.stringify(cuerpo), {
     status: estado,
@@ -60,7 +62,8 @@ function texto(valor, maximo) {
 
 /* El formulario solo debe poder enviarse desde el propio sitio. */
 function mismoOrigen(request) {
-  const cabecera = request.headers.get("Origin") || request.headers.get("Referer");
+  const cabecera =
+    request.headers.get("Origin") || request.headers.get("Referer");
   if (!cabecera) {
     return false;
   }
@@ -71,9 +74,7 @@ function mismoOrigen(request) {
   }
 }
 
-export async function onRequestPost(contexto) {
-  const { request, env } = contexto;
-
+async function contacto(request, env) {
   if (!mismoOrigen(request)) {
     return json({ ok: false, codigo: "origen" }, 403);
   }
@@ -84,7 +85,7 @@ export async function onRequestPost(contexto) {
   }
 
   /* El Content-Length es la salida barata, pero una petición enviada por trozos
-     no lo trae: el tope de verdad se aplica sobre el texto ya leído. */
+   * no lo trae: el tope de verdad se aplica sobre el texto ya leído. */
   const declarado = Number(request.headers.get("Content-Length") || 0);
   if (declarado > CUERPO_MAXIMO) {
     return json({ ok: false, codigo: "formato" }, 413);
@@ -130,7 +131,12 @@ export async function onRequestPost(contexto) {
     return json({ ok: false, codigo: "limite" }, 429);
   }
 
-  if (!env.RESEND_API_KEY || !env.TURNSTILE_SECRET || !env.CONTACT_FROM || !env.CONTACT_TO) {
+  if (
+    !env.RESEND_API_KEY ||
+    !env.TURNSTILE_SECRET ||
+    !env.CONTACT_FROM ||
+    !env.CONTACT_TO
+  ) {
     return json({ ok: false, codigo: "sinconfigurar" }, 503);
   }
 
@@ -192,9 +198,22 @@ export async function onRequestPost(contexto) {
   return json({ ok: true }, 200);
 }
 
-export async function onRequest(contexto) {
-  if (contexto.request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: { Allow: "POST" } });
-  }
-  return json({ ok: false, codigo: "metodo" }, 405);
-}
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (url.pathname === "/api/contacto") {
+      if (request.method === "POST") {
+        return contacto(request, env);
+      }
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers: { Allow: "POST" } });
+      }
+      return json({ ok: false, codigo: "metodo" }, 405);
+    }
+
+    /* Todo lo demás son archivos: los sirve el binding de assets, que además
+     * aplica las reglas de `_headers` y la página 404. */
+    return env.ASSETS.fetch(request);
+  },
+};

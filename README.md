@@ -14,9 +14,10 @@ coste de servidor.
 ├── index.html                     Portada en español
 ├── en/index.html                  Portada en inglés
 ├── 404.html                       Página de error (autocontenida, para el hosting)
-├── _headers                       Cabeceras de caché y seguridad (Cloudflare Pages)
-├── .nojekyll                      Evita el procesado con Jekyll en GitHub Pages
-├── functions/api/contacto.js      Pages Function del formulario (Resend + Turnstile)
+├── _headers                       Cabeceras de caché y seguridad
+├── .assetsignore                  Lo que no debe publicarse como estático
+├── wrangler.jsonc                 Configuración del Worker y de los assets
+├── src/worker.js                  Sirve los archivos y atiende el formulario
 ├── assets/
 │   ├── css/style.css              Hoja única: tokens, componentes y movimiento
 │   ├── js/ascii-field.js          Fondo ASCII en <canvas>
@@ -27,8 +28,7 @@ coste de servidor.
 ```
 
 No hay `package.json`, ni `node_modules`, ni paso de compilación: lo que se edita
-es lo que se publica. La única pieza que no es un archivo estático es la Pages
-Function del formulario.
+es lo que se publica.
 
 ## Verlo en local
 
@@ -42,13 +42,24 @@ restringen la carga de fuentes desde `file://`.
 
 ## Publicar
 
-Está conectado a Git: cada push a `main` despliega. Sin build command, con `/`
-como directorio de salida.
+Es un **Worker con Assets**, no un proyecto de Pages: eso importa, porque en un
+Worker la carpeta `functions/` se ignora y el enrutado lo decide `src/worker.js`.
+Está conectado a Git, así que cada push a `main` despliega.
+
+Antes de desplegar, comprueba que el `name` de `wrangler.jsonc` es el de tu
+Worker actual:
+
+```bash
+npx wrangler deployments list
+```
+
+Si no coincide, wrangler crea otro Worker y tu dominio sigue apuntando al viejo,
+así que no verías ningún cambio.
 
 ## El formulario de contacto
 
-Necesita cuatro variables en **Workers & Pages → tu proyecto → Settings →
-Variables and Secrets**:
+Necesita cuatro variables en **Workers & Pages → tu Worker → Settings → Variables
+and Secrets**:
 
 | Variable | Qué es |
 | :--- | :--- |
@@ -57,12 +68,29 @@ Variables and Secrets**:
 | `CONTACT_FROM` | Remitente, de tu dominio verificado en Resend |
 | `CONTACT_TO` | Dónde llegan los mensajes |
 
-La *site key* de Turnstile va en el HTML, en `data-sitekey`, **en los dos
-idiomas**. Mientras falte algo, el formulario se oculta y quedan el correo
-directo y los perfiles, que funcionan solos.
+De dónde sale cada valor:
 
-El paso a paso, con los registros DNS y las trampas de cada panel, está en
-[ACTIVAR-FORMULARIO.md](ACTIVAR-FORMULARIO.md).
+- `RESEND_API_KEY`: en Resend, tras **verificar el dominio** con los registros
+  DNS que te dé. Sin dominio verificado no se puede enviar.
+- `TURNSTILE_SECRET`: el secreto del widget, en **Turnstile** dentro de
+  Cloudflare. La *site key* de ese mismo widget va en el HTML, en `data-sitekey`,
+  **en los dos idiomas**.
+- `CONTACT_FROM`: cualquier dirección de tu dominio verificado, por ejemplo
+  `Portafolio <contacto@hasq.dev>`. La dirección no tiene que existir.
+- `CONTACT_TO`: dónde quieres recibir los mensajes.
+
+Mientras falte algo, la ruta responde `503` y el formulario lo dice y ofrece el
+correo directo.
+
+## Verlo en local con el formulario
+
+`python3 -m http.server` sirve la página pero no el Worker, así que el formulario
+daría 404. Para probarlo entero hace falta wrangler, que lee `.dev.vars` para las
+variables:
+
+```bash
+npx wrangler dev
+```
 
 ## Historial
 

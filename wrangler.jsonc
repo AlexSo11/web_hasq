@@ -1,0 +1,20 @@
+{
+  // ATENCIÓN: este nombre tiene que ser EXACTAMENTE el de tu Worker actual.
+  // Si no coincide, wrangler crea otro distinto y tu dominio sigue apuntando al
+  // viejo, así que no verías ningún cambio. Para comprobarlo:
+  //   npx wrangler deployments list
+  // o mira la URL que te da Cloudflare, del tipo <nombre>.<algo>.workers.dev
+  "name": "web-hasq",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-12",
+
+  // El sitio se sirve tal cual está en el repositorio, sin build.
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    // Que las rutas no encontradas devuelvan tu 404.html en vez de un 404 vacío.
+    "not_found_handling": "404-page",
+    // La API se atiende antes de mirar si hay un archivo con ese nombre.
+    "run_worker_first": ["/api/*"]
+  }
+}
