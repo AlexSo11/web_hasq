@@ -5,16 +5,33 @@
 # editas su contenido hay que recalcular el hash o el navegador los bloqueará y
 # el tema dejará de inicializarse. `style-src` sí necesita 'unsafe-inline'
 # porque 404.html lleva un bloque <style> y atributos style en línea.
+#
+# `connect-src 'self'` es imprescindible desde que el formulario envía por fetch
+# a /api/contacto: con `default-src 'none'` y sin esa directiva, el navegador
+# bloquearía la petición.
+#
+# Turnstile aporta dos orígenes: el script del widget y el iframe que dibuja.
+# Solo se piden cuando la sección de contacto se acerca, así que quien no baja
+# hasta ahí no llega a hacer ninguna petición a terceros.
 
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
-  Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-RKGDAhhhxw8uYLbpiW6cimPdSn388rNDb6972649BTE=' 'sha256-AZuRtxIR5W0GlXzaU9W/iLXtJrM8KV52+pGT9HzT0iU=' 'sha256-ycHX6lTCKFPygm1ZzVqBR0KWbDJ09hDeuMSbf/d1zU4='; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-RKGDAhhhxw8uYLbpiW6cimPdSn388rNDb6972649BTE=' 'sha256-AZuRtxIR5W0GlXzaU9W/iLXtJrM8KV52+pGT9HzT0iU=' 'sha256-ycHX6lTCKFPygm1ZzVqBR0KWbDJ09hDeuMSbf/d1zU4=' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 
-# El HTML se revalida siempre: los nombres no llevan huella, así que la caché
-# larga se reserva para las fuentes, cuyo nombre cambia si cambia el archivo.
+# NADA de caché larga en los assets. Los nombres de archivo no llevan huella
+# (no hay build que la añada), así que una copia cacheada de style.css puede
+# seguir sirviéndose después de un despliegue y dejar el sitio descuadrado: la
+# captura del visor se veía encogida porque el CSS servido no tenía la regla
+# `.captura` y el <figure> recuperaba su margen por defecto de 40px laterales.
+#
+# Se revalida siempre. El 304 lo responde el borde de Cloudflare, así que el
+# coste real es una petición condicional por archivo, no una descarga.
+#
+# La única excepción son las fuentes: son binarios que no cambian. Si algún día
+# reemplazas un .woff2, cámbiale el nombre, porque su caché es de un año.
 
 /
   Cache-Control: public, max-age=0, must-revalidate
@@ -29,7 +46,11 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 /assets/*
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=0, must-revalidate
 
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
+
+# La función de contacto responde siempre en vivo.
+/api/*
+  Cache-Control: no-store

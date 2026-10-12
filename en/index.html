@@ -46,7 +46,7 @@
     <canvas id="ascii-field" aria-hidden="true"></canvas>
 
     <header class="topbar">
-      <div class="wrap topbar__in">
+      <div class="topbar__in">
         <a class="brand" href="#top">
           <span class="brand__tilde" aria-hidden="true">~</span>hsolis
         </a>
@@ -149,27 +149,23 @@
             </div>
           </div>
 
-          <div class="terminal" data-reveal>
-            <div class="terminal__bar">
-              <span class="terminal__dots" aria-hidden="true">
-                <i></i><i></i><i></i>
-              </span>
-              <span class="terminal__title">profile · zsh</span>
-            </div>
-            <pre class="terminal__body"><code><span class="c">$</span> whoami
-<b>Hector Solís</b>
-
-<span class="c">$</span> cat profile.txt
-<span class="dim">degree</span>  Computer Engineering
-<span class="dim">base</span>    Guadalajara, Jalisco, MX
-<span class="dim">focus</span>   backend / web / deployment
-        medical imaging, data and 3D
-<span class="dim">status</span>  <span class="ok">open to collaborate</span>
-
-<span class="c">$</span> ls projects/
-in-development/   completed/
-<span class="c">$</span> <span class="caret"></span></code></pre>
-          </div>
+<div class="terminal-lag" data-terminal>
+  <div class="terminal">
+    <pre class="terminal__body"><code><span class="tl"><span class="c">$</span> whoami</span>
+<span class="tl"><b>Hector Solís</b></span>
+<span class="tl"> </span>
+<span class="tl"><span class="c">$</span> cat profile.txt</span>
+<span class="tl"><span class="dim">degree</span>  Computer Engineering</span>
+<span class="tl"><span class="dim">base</span>    Guadalajara, Jalisco, MX</span>
+<span class="tl"><span class="dim">focus</span>   backend / web / deployment</span>
+<span class="tl">        medical imaging, data and 3D</span>
+<span class="tl"><span class="dim">status</span>  <span class="ok">open to collaborate</span></span>
+<span class="tl"> </span>
+<span class="tl"><span class="c">$</span> ls projects/</span>
+<span class="tl">in-development/   completed/</span>
+<span class="tl"><span class="c">$</span> <span class="caret"></span></span></code></pre>
+  </div>
+</div>
         </div>
       </section>
 
@@ -554,6 +550,21 @@ sources
                   traceable segmentation.
                 </p>
 
+                <figure class="captura">
+                  <img
+                    src="../assets/img/ct-pet-segmentacion.webp"
+                    width="1600"
+                    height="900"
+                    loading="lazy"
+                    decoding="async"
+                    alt="The PET/CT segmentation pipeline panel: Hounsfield unit histogram with the thresholds marked, the optimiser convergence curve and the generated 3D meshes for the whole body and each region."
+                  />
+                  <figcaption>
+                    The pipeline running: thresholded histogram, optimiser convergence
+                    and the per-region 3D meshes.
+                  </figcaption>
+                </figure>
+
                 <dl class="facts">
                   <div class="facts__item">
                     <dt>Tests</dt>
@@ -850,20 +861,23 @@ sources
                 <h4 class="project__title">This page</h4>
                 <p class="project__summary">
                   This very site: a static page with no dependencies and no build
-                  step, with self-hosted fonts and an ASCII field drawn on a
-                  canvas.
+                    step, with self-hosted fonts, an ASCII field drawn on a canvas
+                    and a single function for the form.
                 </p>
                 <ul class="bullets">
                   <li>
-                    <b>~270 kB</b> in total, fonts included, and no third-party
-                    requests.
+                    <b>~380 kB</b> in total, fonts included, and no third-party
+                      requests except Turnstile, which only loads as you approach
+                      the contact section.
                   </li>
                   <li>
-                    An ASCII field with ordered dithering and <b>two opacity
-                    zones</b> so reading is never compromised.
+                    An ASCII field with ordered dithering, <b>two opacity zones</b>
+                      and a scroll controller that fades it in, tilts it and thins it
+                      out per section.
                   </li>
                   <li>
-                    Security headers and a hashed CSP on Cloudflare Pages.
+                    Contact through <b>Pages Functions</b>, Turnstile and Resend,
+                      plus security headers with a hashed CSP.
                   </li>
                 </ul>
                 <p class="project__links">
@@ -886,7 +900,7 @@ sources
       </section>
 
       <section
-        class="section"
+        class="section section--portada"
         id="contacto"
         aria-labelledby="contacto-title"
         data-reveal-group
@@ -904,31 +918,124 @@ sources
 
           <div class="prose" data-reveal>
             <p>
-              Email is the fastest route. You can also reach me on LinkedIn or go
-              through my public code on GitHub.
+              Write to me through the form and I will reply to the address you
+              leave. If you would rather use email directly or my profiles, they
+              are right here.
             </p>
           </div>
 
-          <div class="contact__actions" data-reveal>
-            <a class="btn btn--primary" href="mailto:ha.solis.q@gmail.com">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <rect x="2.75" y="4.75" width="18.5" height="14.5" rx="2" />
-                <path d="m3.5 7 8.5 6 8.5-6" />
-              </svg>
-              ha.solis.q@gmail.com
-            </a>
+          <div class="contacto" data-reveal>
+            <form
+              class="contacto__form"
+              id="contacto-form"
+              novalidate
+              data-requires-js
+            >
+              <p class="contacto__titulo">Write to me</p>
 
+              <label class="campo">
+                <span class="campo__label">Name</span>
+                <input
+                  class="campo__input"
+                  type="text"
+                  name="nombre"
+                  id="campo-nombre"
+                  autocomplete="name"
+                  maxlength="80"
+                  required
+                />
+              </label>
+
+              <label class="campo">
+                <span class="campo__label">Email</span>
+                <input
+                  class="campo__input"
+                  type="email"
+                  name="correo"
+                  id="campo-correo"
+                  autocomplete="email"
+                  maxlength="120"
+                  required
+                />
+              </label>
+
+              <label class="campo">
+                <span class="campo__label">Message</span>
+                <textarea
+                  class="campo__input campo__input--area"
+                  name="mensaje"
+                  id="campo-mensaje"
+                  rows="4"
+                  maxlength="2000"
+                  required
+                ></textarea>
+              </label>
+
+              <!-- Trampa para bots: no la ve nadie y queda fuera del orden de
+                   tabulación. Si llega rellena, la función descarta el envío. -->
+              <p class="campo__trampa" aria-hidden="true">
+                <label>
+                  Do not fill in
+                  <input type="text" name="web" tabindex="-1" autocomplete="off" />
+                </label>
+              </p>
+
+              <!-- La site key es pública; el secreto vive en la función. -->
+              <div
+                class="cf-turnstile"
+                data-sitekey="TU_SITE_KEY_DE_TURNSTILE"
+                data-appearance="interaction-only"
+                data-size="flexible"
+                data-language="en"
+              ></div>
+
+              <div class="contacto__pie">
+                <button class="btn btn--primary" type="submit" id="contacto-enviar">
+                  Send message
+                </button>
+                <p
+                  class="contacto__estado"
+                  id="contacto-estado"
+                  role="status"
+                  aria-live="polite"
+                ></p>
+              </div>
+            </form>
+
+            <div class="selector" data-selector>
+              <a class="selector__item" href="mailto:ha.solis.q@gmail.com">
+                <span class="selector__marca" aria-hidden="true">[ mail ]</span>
+                <span class="selector__nombre">Email</span>
+                <span class="selector__dato">ha.solis.q@gmail.com</span>
+              </a>
+
+              <a
+                class="selector__item"
+                href="https://github.com/AlexSo11"
+                target="_blank"
+                rel="me noopener"
+              >
+                <span class="selector__marca" aria-hidden="true">[ git ]</span>
+                <span class="selector__nombre">GitHub</span>
+                <span class="selector__dato">AlexSo11</span>
+              </a>
+
+              <a
+                class="selector__item"
+                href="https://www.linkedin.com/in/alejandro-qui%C3%B1ones-366648366"
+                target="_blank"
+                rel="me noopener"
+              >
+                <span class="selector__marca" aria-hidden="true">[ in ]</span>
+                <span class="selector__nombre">LinkedIn</span>
+                <span class="selector__dato">Alejandro Quiñones</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="contacto__extra" data-reveal>
             <button
-              class="btn"
+              class="btn btn--quiet"
               type="button"
               id="copy-email"
               data-email="ha.solis.q@gmail.com"
@@ -936,77 +1043,11 @@ sources
               data-failed="Could not copy; select it manually"
             >
               <span class="icon-swap" aria-hidden="true">
-                <svg
-                  class="icon-copy"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  focusable="false"
-                >
-                  <rect x="9" y="9" width="11.5" height="11.5" rx="2" />
-                  <path d="M6 15H4.5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1H15a1 1 0 0 1 1 1V6" />
-                </svg>
-                <svg
-                  class="icon-check"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="square"
-                  focusable="false"
-                >
-                  <path d="m4.5 12.5 5 5 10-11" />
-                </svg>
+                <svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false"><rect x="9" y="9" width="11.5" height="11.5" rx="2" /><path d="M6 15H4.5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1H15a1 1 0 0 1 1 1V6" /></svg>
+                <svg class="icon-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" focusable="false"><path d="m4.5 12.5 5 5 10-11" /></svg>
               </span>
               Copy email
             </button>
-
-            <a
-              class="btn"
-              href="https://www.linkedin.com/in/alejandro-qui%C3%B1ones-366648366"
-              target="_blank"
-              rel="me noopener"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path
-                  d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13Zm1.78 13.02H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"
-                />
-              </svg>
-              LinkedIn
-            </a>
-
-            <a
-              class="btn"
-              href="https://github.com/AlexSo11"
-              target="_blank"
-              rel="me noopener"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path
-                  d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.41-5.25 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.2.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"
-                />
-              </svg>
-              GitHub
-            </a>
           </div>
 
           <p class="visually-hidden" id="copy-status" role="status" aria-live="polite"></p>

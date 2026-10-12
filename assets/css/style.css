@@ -93,6 +93,12 @@
   --accent-on: #1a1408;
   --ok: #7fd1a8;
 
+  /* Cristal del terminal, de la barra y del selector. Va bastante opaco a
+     propósito: el desenfoque promedia el ASCII de detrás, pero el tinte es lo
+     que garantiza que el texto mantenga el contraste. */
+  --glass: rgb(28 28 40 / 76%);
+  --glass-bar: rgb(20 20 20 / 66%);
+
   /* Campo ASCII (assets/js/ascii-field.js). El alfa es distinto en los
      márgenes porque ahí no hay texto encima: en la columna de contenido está
      topado para que fg-3 no baje de 4,5:1 sobre el glifo más claro. */
@@ -121,9 +127,18 @@
   --accent-on: #ffffff;
   --ok: #1c6b48;
 
-  --ascii-rgb: 143, 176, 210;
+  --glass: rgb(255 255 255 / 80%);
+  --glass-bar: rgb(237 240 245 / 74%);
+
+  /* En claro el ASCII no se oscurece: cada punto de luminancia que baja se lo
+     come el contraste del texto, y el gris claro ya estaba cerca del límite.
+     Se sube el croma, que no cuesta contraste (de 67 a 116 de recorrido entre
+     canales, con la misma luminancia), y la presencia se gana además en los
+     márgenes, donde no hay nada escrito encima. Sobre el glifo más claro fg-3
+     se queda en 4,8:1 y la barra superior en 5,2:1. */
+  --ascii-rgb: 120, 177, 236;
   --ascii-max: 0.2;
-  --ascii-margin-max: 0.45;
+  --ascii-margin-max: 0.62;
 }
 
 /* 2. Base ------------------------------------------------------------------ */
@@ -168,6 +183,14 @@ p {
   text-wrap: pretty;
 }
 
+/* El navegador da a <figure> 1em arriba y abajo y 40px a los lados. Dentro de
+   una tarjeta eso encoge la imagen y desalinea el pie respecto al texto. Se
+   anula en la base, y no solo en el componente, para que una hoja cacheada sin
+   la regla `.captura` no pueda volver a producir el efecto. */
+figure {
+  margin: 0;
+}
+
 ul,
 ol,
 dl {
@@ -194,6 +217,15 @@ svg,
 canvas {
   display: block;
   max-width: 100%;
+}
+
+/* `width` y `height` en el HTML sirven para reservar la proporción antes de
+   cargar, pero el atributo de alto se aplica además como altura fija: al
+   limitar la imagen por ancho, se deforma. Con `height: auto` la proporción
+   la marca el propio archivo. Solo a `img`; los SVG en línea se dimensionan
+   por CSS y no deben heredar esto. */
+img {
+  height: auto;
 }
 
 svg {
@@ -246,6 +278,30 @@ svg {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+
+  /* Arranca invisible y el controlador de scroll la sube. No hay problema de
+     degradación: sin JavaScript el canvas está vacío igualmente, porque lo
+     dibuja ascii-field.js. La opacidad y el giro los escribe el controlador en
+     este mismo elemento, no en :root, para no recalcular el documento entero
+     en cada fotograma. */
+  opacity: 0;
+  transform-origin: 50% 42%;
+}
+
+/* En contacto el lienzo deriva despacio sobre sí mismo, que es lo que da la
+   sensación de partículas en movimiento sin dibujar ni una celda más. El
+   `scale` evita que al desplazarse asomen los bordes. */
+@keyframes deriva {
+  from {
+    transform: scale(1.06) translate3d(-1.1%, 0.7%, 0);
+  }
+  to {
+    transform: scale(1.06) translate3d(1.1%, -0.7%, 0);
+  }
+}
+
+html[data-stage="contacto"] #ascii-field {
+  animation: deriva 26s ease-in-out infinite alternate;
 }
 
 .topbar,
@@ -267,7 +323,18 @@ main,
 .section {
   padding-block: clamp(3.5rem, 9vw, 6.5rem);
   border-top: 1px solid var(--line);
-  scroll-margin-top: 4.5rem;
+  scroll-margin-top: 5.5rem;
+}
+
+/* Portada: la sección ocupa la pantalla entera, así que al centrarla no se ve
+   nada de la anterior. Se usa min-height y no height para que en ventanas
+   bajas el contenido empuje y se pueda desplazar en vez de recortarse. */
+.section--portada {
+  display: grid;
+  align-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: clamp(5rem, 12vh, 7rem) clamp(3rem, 8vh, 5rem);
 }
 
 .section__head {
@@ -307,18 +374,41 @@ main,
 /* 5. Barra superior -------------------------------------------------------- */
 
 .topbar {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: 0.9rem;
+  left: 50%;
   z-index: 3;
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  width: fit-content;
+  max-width: calc(100vw - 2rem);
+  translate: -50% 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--glass-bar);
+  backdrop-filter: blur(14px) saturate(1.2);
 }
 
 .topbar__in {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  min-height: 3.25rem;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  min-height: 2.75rem;
+  padding: 0.3rem 0.5rem 0.3rem 1.1rem;
+}
+
+/* Entrada de la barra: leve, una sola vez y con la curva del sistema. */
+@keyframes barra-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.js .topbar {
+  animation: barra-entra 420ms var(--ease-out) 300ms both;
 }
 
 .brand {
@@ -525,8 +615,12 @@ main,
 /* 7. Portada --------------------------------------------------------------- */
 
 .hero {
-  padding-block: clamp(3rem, 9vw, 6rem) clamp(3rem, 8vw, 5rem);
-  scroll-margin-top: 4.5rem;
+  display: grid;
+  align-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: clamp(5.5rem, 13vh, 8rem) clamp(3rem, 8vh, 5rem);
+  scroll-margin-top: 0;
 }
 
 .hero__in {
@@ -583,48 +677,43 @@ main,
 
 /* 8. Terminal -------------------------------------------------------------- */
 
+/* El envoltorio existe para que el controlador de scroll mueva el terminal con
+   su propio transform sin pisar la inclinación 3D de dentro, y para que la
+   entrada por scroll no tenga que compartir transform con nadie. */
+.terminal-lag {
+  will-change: transform;
+}
+
 .terminal {
+  position: relative;
+  padding: clamp(1.1rem, 2.6vw, 1.5rem) clamp(1.15rem, 2.8vw, 1.6rem);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  overflow: hidden;
+  border-radius: 10px;
+  background: var(--glass);
+  backdrop-filter: blur(16px) saturate(1.15);
+  transform: perspective(1200px) rotateX(calc(4deg + var(--pt-x, 0deg)))
+    rotateY(calc(-8deg + var(--pt-y, 0deg)));
+  will-change: transform;
 }
 
-.terminal__bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--line);
-  background: var(--surface-2);
-}
-
-.terminal__dots {
-  display: flex;
-  gap: 0.3rem;
-}
-
-.terminal__dots i {
-  width: 7px;
-  height: 7px;
-  border: 1px solid var(--line-2);
-}
-
-.terminal__title {
-  color: var(--fg-3);
-  font-family: var(--font-display);
-  font-size: 11px;
-}
-
+/* Con `pre` a secas, los saltos de línea del marcado entre líneas se verían.
+   Con el padre en flujo normal y cada línea en bloque, el HTML puede seguir
+   sangrado y aun así cada `.tl` es una línea. El `white-space: pre` de dentro
+   conserva la alineación de las columnas. */
 .terminal__body {
   margin: 0;
-  padding: 1rem 1.1rem 1.25rem;
-  overflow-x: auto;
+  overflow: hidden;
   color: var(--fg-2);
   font-family: var(--font-display);
   font-size: 11px;
   line-height: 2;
-  tab-size: 2;
+  white-space: normal;
+}
+
+.terminal__body .tl {
+  display: block;
+  width: fit-content;
+  white-space: pre;
 }
 
 .terminal__body b {
@@ -1036,11 +1125,147 @@ main,
 
 /* 14. Contacto y pie ------------------------------------------------------- */
 
-.contact__actions {
+/* Sin JavaScript no se puede enviar, así que el formulario no aparece: quedan
+   el correo directo y los perfiles, que funcionan solos. */
+html:not(.js) [data-requires-js] {
+  display: none;
+}
+
+.contacto {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  margin-top: 2rem;
+}
+
+@media (min-width: 900px) {
+  .contacto {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: start;
+  }
+}
+
+.contacto__form {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.1rem, 2.6vw, 1.5rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.contacto__titulo {
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.campo {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.campo__label {
+  color: var(--fg-3);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.campo__input {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+}
+
+.campo__input--area {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.campo__trampa {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.contacto__pie {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1.75rem;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.contacto__estado {
+  font-size: 0.8125rem;
+  color: var(--fg-3);
+}
+
+.contacto__estado[data-estado="ok"] {
+  color: var(--ok);
+}
+
+.contacto__estado[data-estado="error"] {
+  color: var(--accent);
+}
+
+.contacto__extra {
+  margin-top: 1.25rem;
+}
+
+/* Selector de contacto: el guiño a la referencia, sin WebGL. Cada tarjeta se
+   inclina con el puntero; el ángulo lo escribe main.js en la propia tarjeta. */
+.selector {
+  display: grid;
+  gap: 0.75rem;
+  perspective: 900px;
+}
+
+.selector__item {
+  display: grid;
+  gap: 0.2rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-decoration: none;
+  transform: rotateX(var(--sel-x, 0deg)) rotateY(var(--sel-y, 0deg));
+  transition: border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out);
+  will-change: transform;
+}
+
+.selector__marca {
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 11px;
+}
+
+.selector__nombre {
+  color: var(--fg);
+  font-size: 1rem;
+}
+
+.selector__dato {
+  color: var(--fg-3);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .selector__item:hover {
+    border-color: var(--line-2);
+    background: var(--surface-2);
+  }
 }
 
 .site-footer {
@@ -1181,20 +1406,38 @@ main,
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-/* El terminal se imprime de arriba abajo con un barrido de clip-path: una sola
-   animación, resuelta en el compositor y sin tocar el marcado del bloque. El
-   retardo lo hereda del contenedor, que es el que entra escalonado. */
-@keyframes terminal-print {
+/* Tecleo: el barrido va por líneas. Cada `.tl` mide lo que mide su texto, así
+   que `steps(--chars)` cae justo en los cortes de letra y, al ser monoespaciada,
+   el avance coincide con la rejilla de glifos. El retardo escala con el índice
+   de línea, que pone main.js: se solapan y el bloque se escribe en dos segundos
+   en vez de encadenar una línea tras otra. */
+@keyframes tecleo {
   from {
-    clip-path: inset(0 0 100% 0);
+    clip-path: inset(0 100% 0 0);
   }
   to {
     clip-path: inset(0 0 0 0);
   }
 }
 
-.js .terminal__body {
-  animation: terminal-print 480ms var(--ease-out) var(--reveal-delay, 0ms) both;
+.js .terminal__body .tl {
+  animation: tecleo calc(var(--chars, 1) * 22ms) steps(var(--chars, 1))
+    calc(var(--i, 0) * 110ms) both;
+}
+
+/* La entrada del terminal es el propio tecleo, así que solo necesita aparecer:
+   animar aquí el transform chocaría con la inclinación 3D de arriba. */
+@keyframes terminal-entra {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.js .terminal {
+  animation: terminal-entra 520ms var(--ease-out) 120ms both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1204,7 +1447,7 @@ main,
     transform: none;
   }
 
-  .js .terminal__body {
+  .js .terminal__body .tl {
     animation: none;
     clip-path: none;
   }
@@ -1215,6 +1458,19 @@ main,
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  /* El parallaje y la inclinación los escribe main.js, así que el CSS no puede
+     apagarlos: eso lo decide el propio controlador. Aquí solo se dejan de
+     reservar capas de composición que ya no se van a mover. */
+  .terminal-lag,
+  .terminal,
+  .selector__item {
+    will-change: auto;
+  }
+
+  html[data-stage="contacto"] #ascii-field {
+    animation: none;
   }
 
   *,
@@ -1230,9 +1486,16 @@ main,
   #ascii-field,
   .topbar,
   .hero__actions,
-  .contact__actions,
+  .contacto__form,
+  .contacto__extra,
   .skip-link {
     display: none !important;
+  }
+
+  /* El terminal entra con clip-path; en papel tiene que salir entero. */
+  .terminal__body .tl {
+    clip-path: none !important;
+    animation: none !important;
   }
 
   :root {

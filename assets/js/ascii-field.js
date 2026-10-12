@@ -39,6 +39,14 @@
      las manchas del ruido. */
   var BAYER = new Float32Array(64);
 
+  /* En la sección de contacto el campo baja de densidad y el puntero atrae
+     desde más lejos: los caracteres se agrupan hacia la opción que señalas, que
+     es el gesto de selector de la referencia. El movimiento lento lo pone el
+     CSS sobre el propio lienzo, así que aquí no hay bucle extra. */
+  var DENSIDAD_CONTACTO = 0.62;
+  var FOCO_CONTACTO = 1.6;
+  var modo = "lectura";
+
   var FOCUS_PX = 100; // radio del foco del puntero
   var EDGE_FADE = 80; // px de transición entre columna y margen
   var HEAT_DECAY = 0.95; // por tic; media vida de unos 450 ms
@@ -163,9 +171,10 @@
 
     ctx.font = fontSize + "px " + fontStack;
     ctx.textBaseline = "top";
+    var foco = FOCUS_PX * (modo === "contacto" ? FOCO_CONTACTO : 1);
     cellW = measureCell();
     cellH = Math.round(fontSize * 1.45);
-    focusCells = Math.max(6, Math.round(FOCUS_PX / cellW));
+    focusCells = Math.max(6, Math.round(foco / cellW));
 
     cols = Math.ceil(w / cellW);
     rows = Math.ceil(h / cellH);
@@ -175,7 +184,7 @@
       var factor = Math.sqrt(total / MAX_CELLS);
       cellW = Math.ceil(cellW * factor);
       cellH = Math.round(cellH * factor);
-      focusCells = Math.max(6, Math.round(FOCUS_PX / cellW));
+      focusCells = Math.max(6, Math.round(foco / cellW));
       cols = Math.ceil(w / cellW);
       rows = Math.ceil(h / cellH);
     }
@@ -202,6 +211,8 @@
     colBucket = new Uint8Array(cols);
     colMaxIdx = new Float32Array(cols);
 
+    var densidad = modo === "contacto" ? DENSIDAD_CONTACTO : 1;
+
     var c;
     var r;
     for (c = 0; c < cols; c++) {
@@ -226,7 +237,7 @@
         var raw = fbm(c * 0.13, r * 0.19);
         var v = (raw - 0.36) / 0.3;
         v = v <= 0 ? 0 : v >= 1 ? 1 : v * v * (3 - 2 * v);
-        v = INK_FLOOR + (1 - INK_FLOOR) * v;
+        v = (INK_FLOOR + (1 - INK_FLOOR) * v) * densidad;
         var index = r * cols + c;
         base[index] =
           v * INK_MAX > BAYER[(r & 7) * 8 + (c & 7)] ? v : 0;
@@ -527,6 +538,24 @@
     readTheme();
     paintAll();
   });
+
+  /* Cambio de etapa: la densidad y el radio del foco dependen de la sección.
+     resize() vuelve a dimensionar el lienzo, lo que además lo deja en blanco,
+     así que no quedan celdas de la densidad anterior. */
+  document.addEventListener("stagechange", function (evento) {
+    var nueva = (evento.detail && evento.detail.stage) || "lectura";
+    if (nueva === modo) {
+      return;
+    }
+    modo = nueva;
+    resize();
+  });
+
+  // El estado inicial puede venir ya fijado si el controlador arrancó antes.
+  modo =
+    document.documentElement.getAttribute("data-stage") === "contacto"
+      ? "contacto"
+      : "lectura";
 
   /* ------------------------------------------------------------- arranque */
 
