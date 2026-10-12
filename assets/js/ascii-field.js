@@ -39,11 +39,10 @@
      las manchas del ruido. */
   var BAYER = new Float32Array(64);
 
-  /* La densidad la fija main.js según la sección y llega interpolada, no de
-     golpe. Al bajar, el puntero atrae desde más lejos: los caracteres se
-     agrupan hacia la opción que señalas, que es el gesto de selector. */
+  /* Cuánto más lejos atrae el puntero al acercarse el contacto. El aclarado del
+     campo no vive aquí: es la opacidad del lienzo, que main.js puede mover sin
+     repintar nada. */
   var FOCO_CONTACTO = 1.6;
-  var densidad = 1;
 
   var FOCUS_PX = 100; // radio del foco del puntero
   var EDGE_FADE = 80; // px de transición entre columna y margen
@@ -60,6 +59,7 @@
   var cellW = 11;
   var cellH = 16;
   var offX = 0;
+  var offY = 0; // el lienzo sobresale por arriba: hay que compensarlo
   var focusCells = 15;
 
   var base = null; // Float32Array: intensidad de fondo ya normalizada
@@ -164,15 +164,14 @@
   }
 
   function buildGrid() {
-    var w = document.documentElement.clientWidth;
-    var h = document.documentElement.clientHeight;
+    var w = canvas.clientWidth || document.documentElement.clientWidth;
+    var h = canvas.clientHeight || document.documentElement.clientHeight;
 
     ctx.font = fontSize + "px " + fontStack;
     ctx.textBaseline = "top";
-    var foco = FOCUS_PX * (1 + (1 - densidad) * FOCO_CONTACTO);
     cellW = measureCell();
     cellH = Math.round(fontSize * 1.45);
-    focusCells = Math.max(6, Math.round(foco / cellW));
+    focusCells = Math.max(6, Math.round(FOCUS_PX / cellW));
 
     cols = Math.ceil(w / cellW);
     rows = Math.ceil(h / cellH);
@@ -182,7 +181,7 @@
       var factor = Math.sqrt(total / MAX_CELLS);
       cellW = Math.ceil(cellW * factor);
       cellH = Math.round(cellH * factor);
-      focusCells = Math.max(6, Math.round(foco / cellW));
+      focusCells = Math.max(6, Math.round(FOCUS_PX / cellW));
       cols = Math.ceil(w / cellW);
       rows = Math.ceil(h / cellH);
     }
@@ -233,7 +232,7 @@
         var raw = fbm(c * 0.13, r * 0.19);
         var v = (raw - 0.36) / 0.3;
         v = v <= 0 ? 0 : v >= 1 ? 1 : v * v * (3 - 2 * v);
-        v = (INK_FLOOR + (1 - INK_FLOOR) * v) * densidad;
+        v = INK_FLOOR + (1 - INK_FLOOR) * v;
         var index = r * cols + c;
         base[index] =
           v * INK_MAX > BAYER[(r & 7) * 8 + (c & 7)] ? v : 0;
@@ -432,16 +431,18 @@
 
   function resize() {
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    // clientWidth/Height: el ancho visible. innerWidth incluye la barra de
-    // desplazamiento y dejaba el lienzo más ancho que la ventana.
-    var w = document.documentElement.clientWidth;
-    var h = document.documentElement.clientHeight;
+    // El tamaño lo manda la hoja: el lienzo es un poco más alto que la ventana
+    // para que la deriva vertical nunca descubra un borde. Así no hace falta
+    // escalarlo, que era lo que corría la zona de silencio respecto al texto.
+    var w = canvas.clientWidth || document.documentElement.clientWidth;
+    var h = canvas.clientHeight || document.documentElement.clientHeight;
 
     canvas.width = Math.floor(w * dpr);
     canvas.height = Math.floor(h * dpr);
-    canvas.style.width = w + "px";
-    canvas.style.height = h + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Cuánto sobresale por arriba, para que el puntero caiga en la celda buena.
+    offY = -Math.round(canvas.getBoundingClientRect().top);
 
     buildGrid();
     paintAll();
@@ -501,7 +502,7 @@
     "pointermove",
     function (event) {
       var col = Math.floor((event.clientX - offX) / cellW);
-      var row = Math.floor(event.clientY / cellH);
+      var row = Math.floor((event.clientY + offY) / cellH);
 
       if (heatEnabled) {
         if (col === pointerCol && row === pointerRow) {
@@ -535,20 +536,19 @@
     paintAll();
   });
 
-  /* Cambio de densidad: rehace la rejilla y repinta. paintAll() empieza
-     limpiando el lienzo, así que no quedan celdas de la densidad anterior. Los
-     escalones los decide main.js, que los interpola a lo largo del scroll. */
+  /* Al acercarse el contacto, el puntero atrae desde más lejos: los caracteres
+     se agrupan hacia la opción que señalas. No hace falta rehacer la rejilla
+     para esto, solo recalcular el radio, así que el cambio es gratis y no
+     provoca un tirón al recorrer la sección. */
   document.addEventListener("stagechange", function (evento) {
-    var nueva =
-      evento.detail && typeof evento.detail.densidad === "number"
-        ? evento.detail.densidad
-        : 1;
-    if (Math.abs(nueva - densidad) < 0.02) {
-      return;
-    }
-    densidad = nueva;
-    buildGrid();
-    paintAll();
+    var cerca =
+      evento.detail && typeof evento.detail.contacto === "number"
+        ? evento.detail.contacto
+        : 0;
+    focusCells = Math.max(
+      6,
+      Math.round((FOCUS_PX * (1 + cerca * FOCO_CONTACTO)) / cellW)
+    );
   });
 
   /* ------------------------------------------------------------- arranque */

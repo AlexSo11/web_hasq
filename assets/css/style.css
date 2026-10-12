@@ -272,8 +272,15 @@ svg {
 /* 3. Campo ASCII ----------------------------------------------------------- */
 
 #ascii-field {
+  /* Sobresale por arriba y por abajo lo justo para que la deriva vertical
+     (hasta 18 px) nunca descubra un borde. Se hace con la caja y no con un
+     `scale`, porque escalar el lienzo corre la zona de silencio respecto al
+     texto y el fondo se ve desfasado. */
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: -28px;
+  height: calc(100% + 56px);
   z-index: 0;
   pointer-events: none;
 
