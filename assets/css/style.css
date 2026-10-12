@@ -130,15 +130,13 @@
   --glass: rgb(255 255 255 / 80%);
   --glass-bar: rgb(237 240 245 / 74%);
 
-  /* En claro el ASCII no se oscurece: cada punto de luminancia que baja se lo
-     come el contraste del texto, y el gris claro ya estaba cerca del límite.
-     Se sube el croma, que no cuesta contraste (de 67 a 116 de recorrido entre
-     canales, con la misma luminancia), y la presencia se gana además en los
-     márgenes, donde no hay nada escrito encima. Sobre el glifo más claro fg-3
-     se queda en 4,8:1 y la barra superior en 5,2:1. */
-  --ascii-rgb: 120, 177, 236;
-  --ascii-max: 0.2;
-  --ascii-margin-max: 0.62;
+  /* Azul apagado, sin el croma alto que tenía: un gris azulado que no compite
+     con nada. Como el color es más suave, la presencia se pone en los márgenes,
+     donde no hay texto encima. Sobre el glifo más claro fg-3 se queda en 4,8:1
+     y la barra superior en 5,4:1. */
+  --ascii-rgb: 138, 156, 186;
+  --ascii-max: 0.16;
+  --ascii-margin-max: 0.66;
 }
 
 /* 2. Base ------------------------------------------------------------------ */
@@ -285,23 +283,6 @@ svg {
      este mismo elemento, no en :root, para no recalcular el documento entero
      en cada fotograma. */
   opacity: 0;
-  transform-origin: 50% 42%;
-}
-
-/* En contacto el lienzo deriva despacio sobre sí mismo, que es lo que da la
-   sensación de partículas en movimiento sin dibujar ni una celda más. El
-   `scale` evita que al desplazarse asomen los bordes. */
-@keyframes deriva {
-  from {
-    transform: scale(1.06) translate3d(-1.1%, 0.7%, 0);
-  }
-  to {
-    transform: scale(1.06) translate3d(1.1%, -0.7%, 0);
-  }
-}
-
-html[data-stage="contacto"] #ascii-field {
-  animation: deriva 26s ease-in-out infinite alternate;
 }
 
 .topbar,
@@ -324,6 +305,26 @@ main,
   padding-block: clamp(3.5rem, 9vw, 6.5rem);
   border-top: 1px solid var(--line);
   scroll-margin-top: 5.5rem;
+}
+
+/* En pantalla ancha, Perfil reserva la columna derecha: es el carril por el que
+   baja el terminal. Las columnas y el hueco son exactamente los de la portada,
+   así que el carril coincide con el suyo y el descenso parece intencionado.
+   Sin esto, el terminal aterrizaba encima del texto. */
+@media (min-width: 960px) {
+  #perfil .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    column-gap: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  #perfil .section__head {
+    grid-column: 1 / -1;
+  }
+
+  #perfil .prose {
+    grid-column: 1;
+  }
 }
 
 /* Portada: la sección ocupa la pantalla entera, así que al centrarla no se ve
@@ -633,15 +634,6 @@ main,
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     align-items: start;
   }
-}
-
-.eyebrow {
-  margin-bottom: 1.25rem;
-  color: var(--accent);
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 400;
-  text-transform: uppercase;
 }
 
 .hero__name {
@@ -1232,8 +1224,10 @@ html:not(.js) [data-requires-js] {
 
 .selector__item {
   display: grid;
-  gap: 0.2rem;
-  padding: 1rem 1.15rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.05rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -1244,10 +1238,21 @@ html:not(.js) [data-requires-js] {
   will-change: transform;
 }
 
-.selector__marca {
-  color: var(--accent);
-  font-family: var(--font-display);
-  font-size: 11px;
+.selector__icono {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg-2);
+}
+
+.selector__texto {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
 }
 
 .selector__nombre {
@@ -1469,9 +1474,6 @@ html:not(.js) [data-requires-js] {
     will-change: auto;
   }
 
-  html[data-stage="contacto"] #ascii-field {
-    animation: none;
-  }
 
   *,
   *::before,

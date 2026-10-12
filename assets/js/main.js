@@ -234,6 +234,7 @@
   var terminalLag = document.querySelector("[data-terminal]");
   var terminal = terminalLag ? terminalLag.querySelector(".terminal") : null;
   var hero = document.querySelector(".hero");
+  var perfil = document.getElementById("perfil");
   var contacto = document.getElementById("contacto");
 
   /* El tecleo se resuelve con `steps()`, así que necesita saber cuántas letras
@@ -247,18 +248,25 @@
     }
   );
 
-  var enContacto = false;
   var etapaActual = "";
-  var refrescarEscenario = null;
+  var densidadActual = 1;
 
-  function fijarEtapa(nueva) {
-    if (etapaActual === nueva) {
+  /* El fondo no cambia de golpe al llegar a la sección de contacto: la densidad
+     se interpola a lo largo de media pantalla de scroll y se avisa a
+     ascii-field.js en escalones. Ocho escalones son suficientes para que no se
+     note el salto y cada uno cuesta una reconstrucción de rejilla, no un
+     fotograma entero. */
+  function avisarFondo(nuevaEtapa, nuevaDensidad) {
+    if (nuevaEtapa === etapaActual && Math.abs(nuevaDensidad - densidadActual) < 0.02) {
       return;
     }
-    etapaActual = nueva;
-    root.setAttribute("data-stage", nueva);
+    etapaActual = nuevaEtapa;
+    densidadActual = nuevaDensidad;
+    root.setAttribute("data-stage", nuevaEtapa);
     document.dispatchEvent(
-      new CustomEvent("stagechange", { detail: { stage: nueva } })
+      new CustomEvent("stagechange", {
+        detail: { stage: nuevaEtapa, densidad: nuevaDensidad },
+      })
     );
   }
 
@@ -267,185 +275,261 @@
       return;
     }
 
-    var SUAVIZADO = 0.18;
-    var UMBRAL = { ascii: 0.002, lag: 0.5, tilt: 0.002 };
-    var actual = { ascii: 0, lag: 0, tilt: 0 };
-    var objetivo = { ascii: 0, lag: 0, tilt: 0 };
-    var aplicado = { ascii: -1, lag: -1, tilt: -1 };
-    var corriendo = false;
-    var topeLag = 0;
-    var inicioRango = 0;
-    var finRango = 0;
+    var TAU = 0.115; // s: cuánto tarda el desplazamiento con inercia en llegar
+    var TAU_DERIVA = 0.12; // s: suavizado del empuje del fondo
+    var TOPE_DERIVA = 18; // px: cuánto puede adelantarse o quedarse el fondo
+    var ESCALONES = 8; // pasos de la mezcla de densidad
+    var DENSIDAD_CONTACTO = 0.62;
 
-    function rampa(x, desde, hasta) {
-      if (hasta <= desde) {
-        return 0;
-      }
-      if (x <= desde) {
-        return 0;
-      }
-      if (x >= hasta) {
-        return 1;
-      }
-      return (x - desde) / (hasta - desde);
+    var y = window.scrollY;
+    var destino = y;
+    var anteriorY = y;
+    var maxScroll = 0;
+
+    var empuje = 0;
+    var empujeAplicado = -999;
+    var velocidad = 0;
+
+    var ascii = 0;
+    var asciiAplicado = -1;
+    var lag = 0;
+    var lagAplicado = -999;
+    var topeLag = 0;
+
+    var progresoContacto = 0;
+    var escalon = 0;
+    var ultimo = 0;
+    var corriendo = false;
+
+    function tope() {
+      return Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight
+      );
     }
 
-    /* Los topes se miden, no se escriben a mano: así un cambio de tipografía,
-       de ancho de ventana o de contenido no deja el terminal a medio camino. */
+    /* Los topes se miden, no se escriben a mano. La medición no se ve afectada
+       por el movimiento porque el único transform de la página vive en el
+       lienzo, que está fuera del flujo. */
     function medir() {
-      if (terminalLag) {
-        var perfil = document.getElementById("perfil");
-        if (perfil) {
-          var cajaTerminal = terminalLag.getBoundingClientRect();
-          var yTerminal = cajaTerminal.top + window.scrollY;
-          var cajaPerfil = perfil.getBoundingClientRect();
-          var yPerfil = cajaPerfil.top + window.scrollY;
-          topeLag = Math.max(0, yPerfil - yTerminal - 16);
-        }
-      }
+      maxScroll = tope();
 
-      var stack = document.getElementById("stack");
-      var experiencia = document.getElementById("experiencia");
-      if (stack && experiencia) {
-        var cajaStack = stack.getBoundingClientRect();
-        inicioRango = cajaStack.top + window.scrollY;
-        var cajaExp = experiencia.getBoundingClientRect();
-        finRango = cajaExp.top + window.scrollY + cajaExp.height;
+      if (terminalLag && perfil) {
+        var cajaTerminal = terminalLag.getBoundingClientRect();
+        var yTerminal = cajaTerminal.top + window.scrollY;
+        var cajaPerfil = perfil.getBoundingClientRect();
+        var yPerfil = cajaPerfil.top + window.scrollY;
+        var prosa = perfil.querySelector(".prose");
+
+        if (window.innerWidth >= 960 && prosa) {
+          /* En pantalla ancha Perfil reserva la columna derecha, así que el
+             terminal aterriza justo a la altura del texto: baja por su carril y
+             las palabras no se le echan encima. */
+          var yProsa = prosa.getBoundingClientRect().top + window.scrollY;
+          topeLag = Math.max(0, yProsa - yTerminal - 20);
+        } else {
+          /* En una columna no hay carril: se queda dentro de la portada, encima
+             de la sección. */
+          topeLag = Math.max(
+            0,
+            yPerfil - yTerminal - cajaTerminal.height - 16
+          );
+        }
       }
     }
 
     function calcular() {
-      var y = window.scrollY || window.pageYOffset || 0;
       var altoHero = hero ? hero.offsetHeight : window.innerHeight;
       var recorrido = Math.max(1, altoHero * 0.9);
 
-      objetivo.ascii = Math.min(1, Math.max(0, y / recorrido));
+      ascii = Math.min(1, Math.max(0, y / recorrido));
+      lag = topeLag * ascii;
 
-      /* El terminal baja más despacio que la página y se detiene al llegar a
-         Perfil. A partir de ahí se queda donde está, así que Stack y
-         Experiencia lo dejan atrás. */
-      objetivo.lag = topeLag * objetivo.ascii;
+      if (contacto) {
+        var vh = window.innerHeight;
+        var caja = contacto.getBoundingClientRect();
+        progresoContacto = Math.min(
+          1,
+          Math.max(0, (vh - caja.top) / (vh * 0.5))
+        );
+      } else {
+        progresoContacto = 0;
+      }
 
-      var centro = y + window.innerHeight * 0.5;
-      var tramo = finRango - inicioRango;
-      var borde = tramo * 0.2;
-      objetivo.tilt =
-        tramo > 0
-          ? Math.min(
-              rampa(centro, inicioRango, inicioRango + borde),
-              1 - rampa(centro, finRango - borde, finRango)
-            )
-          : 0;
-
-      fijarEtapa(
-        enContacto ? "contacto" : objetivo.ascii < 0.75 ? "hero" : "lectura"
+      escalon = Math.round(progresoContacto * ESCALONES);
+      avisarFondo(
+        progresoContacto > 0.5 ? "contacto" : ascii < 0.75 ? "hero" : "lectura",
+        1 - (1 - DENSIDAD_CONTACTO) * (escalon / ESCALONES)
       );
     }
 
-    function aplicar() {
+    function pintar(dt, ahora) {
+      /* Deriva direccional: al bajar, el fondo se queda atrás y las letras
+         caen; al subir, al revés. Es la velocidad del scroll, no su posición,
+         así que vuelve sola al sitio en cuanto te detienes. */
+      var delta = y - anteriorY;
+      anteriorY = y;
+      var paso = Math.max(dt, 1 / 240);
+      velocidad += (delta / paso - velocidad) * (1 - Math.exp(-dt / 0.09));
+
+      var objetivo = velocidad * 0.012;
+      if (objetivo > TOPE_DERIVA) {
+        objetivo = TOPE_DERIVA;
+      } else if (objetivo < -TOPE_DERIVA) {
+        objetivo = -TOPE_DERIVA;
+      }
+
+      /* En contacto, además, una respiración lenta para que el campo no se
+         quede del todo quieto. */
+      if (progresoContacto > 0.01) {
+        objetivo += Math.sin(ahora * 0.0004) * 7 * progresoContacto;
+      }
+
+      empuje += (objetivo - empuje) * (1 - Math.exp(-dt / TAU_DERIVA));
+
       if (canvas) {
         if (movimientoReducido) {
-          if (aplicado.ascii !== 1) {
+          if (asciiAplicado !== 1) {
             canvas.style.opacity = "1";
-            aplicado.ascii = 1;
+            asciiAplicado = 1;
           }
-        } else if (Math.abs(actual.ascii - aplicado.ascii) > UMBRAL.ascii) {
-          canvas.style.opacity = String(actual.ascii.toFixed(3));
-          aplicado.ascii = actual.ascii;
+        } else if (Math.abs(ascii - asciiAplicado) > 0.002) {
+          canvas.style.opacity = String(ascii.toFixed(3));
+          asciiAplicado = ascii;
         }
 
-        var quiereTilt = !movimientoReducido && actual.tilt > 0.002;
-        var tieneTilt = aplicado.tilt > 0;
-        if (quiereTilt) {
-          if (Math.abs(actual.tilt - aplicado.tilt) > UMBRAL.tilt) {
-            canvas.style.transform =
-              "perspective(900px) rotateX(" +
-              (actual.tilt * 24).toFixed(2) +
-              "deg) scale(" +
-              (1 + actual.tilt * 0.22).toFixed(3) +
-              ")";
-            aplicado.tilt = actual.tilt;
-          }
-        } else if (tieneTilt) {
-          canvas.style.transform = "";
-          aplicado.tilt = 0;
+        if (!movimientoReducido && Math.abs(empuje - empujeAplicado) > 0.08) {
+          canvas.style.transform =
+            "translate3d(0, " + empuje.toFixed(2) + "px, 0) scale(1.05)";
+          empujeAplicado = empuje;
         }
       }
 
-      if (terminalLag) {
-        var quiereLag = !movimientoReducido && actual.lag > 0.5;
-        if (quiereLag) {
-          if (Math.abs(actual.lag - aplicado.lag) > UMBRAL.lag) {
-            terminalLag.style.transform =
-              "translate3d(0, " + actual.lag.toFixed(1) + "px, 0)";
-            aplicado.lag = actual.lag;
-          }
-        } else if (aplicado.lag !== 0) {
-          terminalLag.style.transform = "";
-          aplicado.lag = 0;
-        }
+      if (terminalLag && Math.abs(lag - lagAplicado) > 0.5) {
+        terminalLag.style.transform = movimientoReducido
+          ? ""
+          : "translate3d(0, " + lag.toFixed(1) + "px, 0)";
+        lagAplicado = lag;
       }
     }
 
-    /* Suavizado: el scroll marca el objetivo y el valor real lo persigue. Sin
-       esto el paralaje se ve a tirones cuando la rueda avanza a saltos. */
-    function animar() {
-      var sigue = false;
-      var claves = ["ascii", "lag", "tilt"];
-      for (var i = 0; i < claves.length; i++) {
-        var clave = claves[i];
-        var diferencia = objetivo[clave] - actual[clave];
-        if (Math.abs(diferencia) > UMBRAL[clave]) {
-          sigue = true;
-        }
-        actual[clave] += diferencia * SUAVIZADO;
+    /* Un solo bucle para todo: el desplazamiento con inercia, la deriva del
+       fondo y los valores derivados. Corre solo mientras hace falta. */
+    function marco(ahora) {
+      var dt = ultimo ? Math.min(0.05, (ahora - ultimo) / 1000) : 1 / 60;
+      ultimo = ahora;
+
+      var diferencia = destino - y;
+      if (Math.abs(diferencia) > 0.35) {
+        y += diferencia * (1 - Math.exp(-dt / TAU));
+        window.scrollTo(0, y);
+        calcular();
+      } else if (diferencia !== 0) {
+        y = destino;
+        window.scrollTo(0, y);
+        calcular();
       }
-      aplicar();
-      corriendo = sigue;
+
+      var objetivoEmpuje = Math.abs(velocidad) * 0.012;
+      pintar(dt, ahora);
+
+      var sigue =
+        Math.abs(destino - y) > 0.35 ||
+        Math.abs(empuje) > 0.15 ||
+        Math.abs(velocidad) > 4 ||
+        progresoContacto > 0.01;
+
       if (sigue) {
-        window.requestAnimationFrame(animar);
+        window.requestAnimationFrame(marco);
+      } else {
+        corriendo = false;
+        ultimo = 0;
       }
     }
 
-    function alScroll() {
-      calcular();
-      if (!corriendo) {
-        corriendo = true;
-        window.requestAnimationFrame(animar);
+    function arrancar() {
+      if (corriendo) {
+        return;
       }
+      corriendo = true;
+      ultimo = 0;
+      window.requestAnimationFrame(marco);
     }
 
-    function reiniciar() {
-      medir();
-      calcular();
-      actual.ascii = objetivo.ascii;
-      actual.lag = objetivo.lag;
-      actual.tilt = objetivo.tilt;
-      aplicado.ascii = -1;
-      aplicado.lag = -1;
-      aplicado.tilt = -1;
-      aplicar();
-    }
+    /* ------------------------------------------------------------------ rueda */
+
+    /* El desplazamiento con inercia se hace moviendo el scroll de verdad, no un
+       bloque con transform. Así el teclado, la barra, los anclajes y los
+       lectores de pantalla siguen funcionando como siempre: lo único que se
+       intercepta es la rueda, que es donde el salto se nota. */
+    window.addEventListener(
+      "wheel",
+      function (evento) {
+        if (movimientoReducido || evento.ctrlKey) {
+          return;
+        }
+        if (!evento.deltaY) {
+          return;
+        }
+        evento.preventDefault();
+        var escala =
+          evento.deltaMode === 1
+            ? 16
+            : evento.deltaMode === 2
+              ? window.innerHeight
+              : 1;
+        destino = Math.min(
+          Math.max(0, destino + evento.deltaY * escala),
+          maxScroll
+        );
+        arrancar();
+      },
+      { passive: false }
+    );
+
+    window.addEventListener(
+      "scroll",
+      function () {
+        var real = window.scrollY;
+        /* Si la posición no cuadra con la que escribimos nosotros, el scroll
+           viene de fuera (teclado, barra, un anclaje) y manda él. */
+        if (!(corriendo && Math.abs(real - y) < 3)) {
+          y = destino = real;
+          anteriorY = y;
+        }
+        calcular();
+        arrancar();
+      },
+      { passive: true }
+    );
 
     var temporizador = 0;
     window.addEventListener(
       "resize",
       function () {
         window.clearTimeout(temporizador);
-        temporizador = window.setTimeout(reiniciar, 160);
+        temporizador = window.setTimeout(function () {
+          medir();
+          calcular();
+          arrancar();
+        }, 160);
       },
       { passive: true }
     );
 
-    window.addEventListener("scroll", alScroll, { passive: true });
+    medir();
+    calcular();
+    pintar(1 / 60, 0);
+    arrancar();
 
-    refrescarEscenario = alScroll;
-    reiniciar();
-
-    // Con la fuente de píxeles cargada el hero cambia de alto: hay que volver a
-    // medir o el tope del parallaje se queda corto.
+    // Con la fuente de píxeles cargada la portada cambia de alto: hay que
+    // volver a medir o el tope del recorrido del terminal se queda corto.
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(reiniciar);
+      document.fonts.ready.then(function () {
+        medir();
+        calcular();
+        arrancar();
+      });
     }
 
     /* El paralaje del puntero del terminal solo donde hay ratón de verdad: en
@@ -458,9 +542,9 @@
       var pintarPuntero = function () {
         pendiente = false;
         var x = (ultimoX / window.innerWidth - 0.5) * 2;
-        var y = (ultimoY / window.innerHeight - 0.5) * 2;
+        var y2 = (ultimoY / window.innerHeight - 0.5) * 2;
         terminal.style.setProperty("--pt-y", (x * 3).toFixed(2) + "deg");
-        terminal.style.setProperty("--pt-x", (-y * 3).toFixed(2) + "deg");
+        terminal.style.setProperty("--pt-x", (-y2 * 3).toFixed(2) + "deg");
       };
 
       window.addEventListener(
@@ -477,20 +561,6 @@
       );
     }
   })();
-
-  /* El contacto decide la etapa: mientras está en el centro de la pantalla, el
-     fondo cambia de modo. */
-  if (contacto && "IntersectionObserver" in window) {
-    new IntersectionObserver(
-      function (entradas) {
-        enContacto = entradas[0].isIntersecting;
-        if (refrescarEscenario) {
-          refrescarEscenario();
-        }
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
-    ).observe(contacto);
-  }
 
   /* ------------------------------------------------ formulario de contacto */
 

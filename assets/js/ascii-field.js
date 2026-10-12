@@ -39,13 +39,11 @@
      las manchas del ruido. */
   var BAYER = new Float32Array(64);
 
-  /* En la sección de contacto el campo baja de densidad y el puntero atrae
-     desde más lejos: los caracteres se agrupan hacia la opción que señalas, que
-     es el gesto de selector de la referencia. El movimiento lento lo pone el
-     CSS sobre el propio lienzo, así que aquí no hay bucle extra. */
-  var DENSIDAD_CONTACTO = 0.62;
+  /* La densidad la fija main.js según la sección y llega interpolada, no de
+     golpe. Al bajar, el puntero atrae desde más lejos: los caracteres se
+     agrupan hacia la opción que señalas, que es el gesto de selector. */
   var FOCO_CONTACTO = 1.6;
-  var modo = "lectura";
+  var densidad = 1;
 
   var FOCUS_PX = 100; // radio del foco del puntero
   var EDGE_FADE = 80; // px de transición entre columna y margen
@@ -171,7 +169,7 @@
 
     ctx.font = fontSize + "px " + fontStack;
     ctx.textBaseline = "top";
-    var foco = FOCUS_PX * (modo === "contacto" ? FOCO_CONTACTO : 1);
+    var foco = FOCUS_PX * (1 + (1 - densidad) * FOCO_CONTACTO);
     cellW = measureCell();
     cellH = Math.round(fontSize * 1.45);
     focusCells = Math.max(6, Math.round(foco / cellW));
@@ -210,8 +208,6 @@
 
     colBucket = new Uint8Array(cols);
     colMaxIdx = new Float32Array(cols);
-
-    var densidad = modo === "contacto" ? DENSIDAD_CONTACTO : 1;
 
     var c;
     var r;
@@ -539,23 +535,21 @@
     paintAll();
   });
 
-  /* Cambio de etapa: la densidad y el radio del foco dependen de la sección.
-     resize() vuelve a dimensionar el lienzo, lo que además lo deja en blanco,
-     así que no quedan celdas de la densidad anterior. */
+  /* Cambio de densidad: rehace la rejilla y repinta. paintAll() empieza
+     limpiando el lienzo, así que no quedan celdas de la densidad anterior. Los
+     escalones los decide main.js, que los interpola a lo largo del scroll. */
   document.addEventListener("stagechange", function (evento) {
-    var nueva = (evento.detail && evento.detail.stage) || "lectura";
-    if (nueva === modo) {
+    var nueva =
+      evento.detail && typeof evento.detail.densidad === "number"
+        ? evento.detail.densidad
+        : 1;
+    if (Math.abs(nueva - densidad) < 0.02) {
       return;
     }
-    modo = nueva;
-    resize();
+    densidad = nueva;
+    buildGrid();
+    paintAll();
   });
-
-  // El estado inicial puede venir ya fijado si el controlador arrancó antes.
-  modo =
-    document.documentElement.getAttribute("data-stage") === "contacto"
-      ? "contacto"
-      : "lectura";
 
   /* ------------------------------------------------------------- arranque */
 
