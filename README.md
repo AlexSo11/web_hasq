@@ -58,15 +58,19 @@ así que no verías ningún cambio.
 
 ## El formulario de contacto
 
-Necesita cuatro variables en **Workers & Pages → tu Worker → Settings → Variables
-and Secrets**:
+Los dos valores que no son secretos viven en `wrangler.jsonc`, para que ningún
+despliegue se los lleve por delante:
 
-| Variable | Qué es |
-| :--- | :--- |
-| `RESEND_API_KEY` | Clave de Resend (secreto) |
-| `TURNSTILE_SECRET` | Secreto del widget de Turnstile (secreto) |
-| `CONTACT_FROM` | Remitente, de tu dominio verificado en Resend |
-| `CONTACT_TO` | Dónde llegan los mensajes |
+| Variable | Dónde | Qué es |
+| :--- | :--- | :--- |
+| `CONTACT_FROM` | `wrangler.jsonc` | Remitente, de tu dominio verificado en Resend |
+| `CONTACT_TO` | `wrangler.jsonc` | Dónde llegan los mensajes |
+| `RESEND_API_KEY` | Panel, **tipo Secret** | Clave de Resend |
+| `TURNSTILE_SECRET` | Panel, **tipo Secret** | Secreto del widget de Turnstile |
+
+Los secretos van en **Workers & Pages → tu Worker → Settings → Variables and
+Secrets**, con el tipo **Secret**, y hay que pulsar **Deploy** al terminar. Se
+pueden crear también desde la terminal con `npx wrangler secret put NOMBRE`.
 
 De dónde sale cada valor:
 
@@ -75,12 +79,16 @@ De dónde sale cada valor:
 - `TURNSTILE_SECRET`: el secreto del widget, en **Turnstile** dentro de
   Cloudflare. La *site key* de ese mismo widget va en el HTML, en `data-sitekey`,
   **en los dos idiomas**.
-- `CONTACT_FROM`: cualquier dirección de tu dominio verificado, por ejemplo
-  `Portafolio <contacto@hasq.dev>`. La dirección no tiene que existir.
-- `CONTACT_TO`: dónde quieres recibir los mensajes.
+- `CONTACT_FROM`: cualquier dirección de tu dominio verificado. No hace falta que
+  exista ese buzón.
 
-Mientras falte algo, la ruta responde `503` y el formulario lo dice y ofrece el
-correo directo.
+Si falta algo, la ruta responde `503` y **dice qué falta**, sin valores:
+
+```bash
+curl -s -X POST https://hasq.dev/api/contacto \
+  -H 'Content-Type: application/json' -H 'Origin: https://hasq.dev' \
+  -d '{"nombre":"a","correo":"a@b.com","mensaje":"comprobacion","token":"x"}'
+```
 
 ## Verlo en local con el formulario
 

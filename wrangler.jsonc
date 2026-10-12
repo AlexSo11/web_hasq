@@ -8,6 +8,15 @@
   "main": "src/worker.js",
   "compatibility_date": "2026-10-12",
 
+  // Valores que NO son secretos, así que viven aquí y sobreviven a cualquier
+  // despliegue. no hace falta que la dirección exista: Resend deja enviar desde
+  // cualquier dirección de un dominio verificado. Los dos secretos
+  // (RESEND_API_KEY y TURNSTILE_SECRET) van en el panel, nunca en el repositorio.
+  "vars": {
+    "CONTACT_FROM": "Portafolio <contacto@hasq.dev>",
+    "CONTACT_TO": "ha.solis.q@gmail.com"
+  },
+
   // El sitio se sirve tal cual está en el repositorio, sin build.
   "assets": {
     "directory": "./",

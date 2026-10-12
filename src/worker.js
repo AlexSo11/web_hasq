@@ -131,13 +131,13 @@ async function contacto(request, env) {
     return json({ ok: false, codigo: "limite" }, 429);
   }
 
-  if (
-    !env.RESEND_API_KEY ||
-    !env.TURNSTILE_SECRET ||
-    !env.CONTACT_FROM ||
-    !env.CONTACT_TO
-  ) {
-    return json({ ok: false, codigo: "sinconfigurar" }, 503);
+  /* Si falta algo, se dice el nombre y no el valor. Un nombre no es un secreto,
+   * y sin esto hay que adivinar cuál de las cuatro no llegó. */
+  const faltan = ["RESEND_API_KEY", "TURNSTILE_SECRET", "CONTACT_FROM", "CONTACT_TO"].filter(
+    (clave) => !env[clave]
+  );
+  if (faltan.length) {
+    return json({ ok: false, codigo: "sinconfigurar", faltan: faltan }, 503);
   }
 
   if (!token) {
