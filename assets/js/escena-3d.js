@@ -199,9 +199,9 @@
   /* -------------------------------------------------- 1. Terreno del gemelo */
 
   /* El relieve del gemelo: un campo de altura de procedimiento muestreado como
-     nube de puntos, que es como se ve un levantamiento real. Nada de malla
-     alámbrica ondulando sin ton ni son: el terreno está quieto y lo que se
-     mueve es el agua, que es lo que cuenta el proyecto. */
+     nube de puntos, que es como se ve un levantamiento real. El terreno está
+     quieto y lo que corre es el agua: no hay ninguna lámina encima, el agua son
+     los propios puntos cambiando de color. */
 
   /* Ruido de valor con interpolación suave: la base del relieve. */
   function ruidoDeValor(x, y) {
@@ -268,9 +268,9 @@
     for (i = 0; i < total; i++) {
       var cx = i % lado;
       var cy = (i / lado) | 0;
-      var x = (cx / (lado - 1) - 0.5) * ANCHO_TERRENO + (Math.random() - 0.5) * 0.006;
-      var y = (cy / (lado - 1) - 0.5) * FONDO_TERRENO + (Math.random() - 0.5) * 0.006;
-      var z = alturaDelTerreno(x * 2.1, y * 2.1) + (Math.random() - 0.5) * 0.0035;
+      var x = (cx / (lado - 1) - 0.5) * ANCHO_TERRENO + (Math.random() - 0.5) * 0.012;
+      var y = (cy / (lado - 1) - 0.5) * FONDO_TERRENO + (Math.random() - 0.5) * 0.012;
+      var z = alturaDelTerreno(x * 2.1, y * 2.1) + (Math.random() - 0.5) * 0.004;
       posiciones[i * 3] = x;
       posiciones[i * 3 + 1] = y;
       posiciones[i * 3 + 2] = z;
@@ -278,55 +278,64 @@
       if (z > masAlto) masAlto = z;
     }
 
-    /* El color por altura: los bajos apagados y las cumbres más claras, que es
-       lo que da la lectura de relieve. */
-    var tinte = new THREE.Color(colorDe("--accent") || "#e0b47c");
-    var abajo = new THREE.Color(colorDe("--ascii-rgb") ? colorAscii() : "#7fa6ce");
-    var rango = Math.max(1e-6, masAlto - masBajo);
-    for (i = 0; i < total; i++) {
-      var t = (posiciones[i * 3 + 2] - masBajo) / rango;
-      var c = abajo.clone().lerp(tinte, 0.25 + t * 0.75);
-      colores[i * 3] = c.r;
-      colores[i * 3 + 1] = c.g;
-      colores[i * 3 + 2] = c.b;
-    }
-
     var geometria = new THREE.BufferGeometry();
     geometria.setAttribute("position", new THREE.BufferAttribute(posiciones, 3));
     geometria.setAttribute("color", new THREE.BufferAttribute(colores, 3));
     geometria.computeBoundingSphere();
 
+    var rango = Math.max(1e-6, masAlto - masBajo);
+    var nivelBase = masBajo + rango * 0.34;
+
     var material = new THREE.PointsMaterial({
-      size: 0.008,
+      size: 0.0085,
       vertexColors: true,
       transparent: true,
-      opacity: 0.92,
+      opacity: 0.95,
       sizeAttenuation: true,
     });
 
     var puntos = new THREE.Points(geometria, material);
     escena.add(puntos);
 
-    /* El agua: una lámina translúcida que sube y baja despacio. Es lo único que
-       se mueve, y significa algo. */
-    var agua = new THREE.Mesh(
-      new THREE.PlaneGeometry(ANCHO_TERRENO * 1.3, FONDO_TERRENO * 1.3),
-      new THREE.MeshBasicMaterial({
-        color: new THREE.Color(colorAscii()),
-        transparent: true,
-        opacity: 0.26,
-        depthWrite: false,
-        side: THREE.DoubleSide,
-      })
-    );
-    escena.add(agua);
+    var seco = new THREE.Color(colorDe("--accent") || "#e0b47c");
+    var agua = new THREE.Color(colorAscii());
 
-    var nivelBase = masBajo + rango * 0.34;
+    /* Repinta el agua: los puntos por debajo del nivel toman el color del agua, y
+       el borde no es una línea recta sino dos trenes de ondas que viajan, para
+       que se lea como corriente y no como un corte. */
+    var pintarAgua = function (segundos, nivel) {
+      for (var k = 0; k < total; k++) {
+        var px = posiciones[k * 3];
+        var py = posiciones[k * 3 + 1];
+        var pz = posiciones[k * 3 + 2];
+
+        var onda =
+          Math.sin(px * 16 + py * 9 - segundos * 1.5) * 0.014 +
+          Math.sin(px * 6 - py * 21 + segundos) * 0.009;
+        var m = (nivel + onda - pz) / 0.024;
+        m = m < 0 ? 0 : m > 1 ? 1 : m;
+        m = m * m * (3 - 2 * m);
+
+        var t = (pz - masBajo) / rango;
+        var mezcla = 0.25 + t * 0.75;
+        var brillo = 1.05 + 0.4 * Math.sin(pz * 55 + segundos * 2);
+
+        colores[k * 3] = agua.r * 0.5 * (1 - mezcla) + seco.r * mezcla;
+        colores[k * 3 + 1] = agua.g * 0.5 * (1 - mezcla) + seco.g * mezcla;
+        colores[k * 3 + 2] = agua.b * 0.5 * (1 - mezcla) + seco.b * mezcla;
+
+        colores[k * 3] += (agua.r * brillo - colores[k * 3]) * m;
+        colores[k * 3 + 1] += (agua.g * brillo - colores[k * 3 + 1]) * m;
+        colores[k * 3 + 2] += (agua.b * brillo - colores[k * 3 + 2]) * m;
+      }
+      geometria.attributes.color.needsUpdate = true;
+    };
+
     var empuje = 0;
+    var ultimoPintado = -1e9;
 
-    /* Un ángulo muy bajo, casi a ras de suelo: el terreno se aleja hacia una
-       línea de horizonte alta y llena un panel alto. Visto desde arriba solo
-       ocupaba la franja central y el resto quedaba vacío. */
+    /* Un ángulo medio: ni a ras de suelo, que convierte el terreno en una franja,
+       ni desde arriba, que lo deja ocupando solo el centro. */
     var encuadrar = function () {
       camara.aspect = (canvas.clientWidth || 1) / (canvas.clientHeight || 1);
       var estrecho = Math.max(0.5, Math.min(1, camara.aspect));
@@ -340,6 +349,7 @@
     render.setPixelRatio(tam.dpr);
     render.setSize(tam.ancho, tam.alto, false);
     encuadrar();
+    pintarAgua(0, nivelBase);
 
     /* El cursor sube el agua: es la interacción que cuenta el proyecto. */
     canvas.parentElement.addEventListener(
@@ -355,13 +365,18 @@
     });
 
     document.addEventListener("themechange", function () {
-      material.needsUpdate = true;
-      agua.material.color = new THREE.Color(colorAscii());
+      seco.set(colorDe("--accent") || "#e0b47c");
+      agua.set(colorAscii());
+      ultimoPintado = -1e9;
     });
 
     var motor = bucle(function (t) {
-      var marea = Math.sin(t * 0.00035) * 0.05;
-      agua.position.z = nivelBase + marea + empuje * 0.12;
+      /* Una corriente lenta no necesita 60 repintados por segundo: subir 26 000
+         colores a la GPU se hace unas veinte veces por segundo. */
+      if (t - ultimoPintado > 45) {
+        ultimoPintado = t;
+        pintarAgua(t * 0.001, nivelBase + empuje * 0.09);
+      }
       render.render(escena, camara);
     });
 
@@ -377,7 +392,6 @@
     );
 
     if (movimientoReducido) {
-      agua.position.z = nivelBase;
       render.render(escena, camara);
       return;
     }
