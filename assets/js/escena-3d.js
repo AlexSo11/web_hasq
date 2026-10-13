@@ -198,13 +198,56 @@
 
   /* -------------------------------------------------- 1. Terreno del gemelo */
 
-  /* La malla del terreno, con una onda que sale del puntero. Es lo que mejor
-     cuenta el proyecto: la mancha de agua que se acumula y se mueve. */
+  /* El relieve del gemelo: un campo de altura de procedimiento muestreado como
+     nube de puntos, que es como se ve un levantamiento real. Nada de malla
+     alámbrica ondulando sin ton ni son: el terreno está quieto y lo que se
+     mueve es el agua, que es lo que cuenta el proyecto. */
+
+  /* Ruido de valor con interpolación suave: la base del relieve. */
+  function ruidoDeValor(x, y) {
+    var xi = Math.floor(x);
+    var yi = Math.floor(y);
+    var xf = x - xi;
+    var yf = y - yi;
+    var u = xf * xf * (3 - 2 * xf);
+    var v = yf * yf * (3 - 2 * yf);
+    var esquina = function (a, b) {
+      var n = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
+      return n - Math.floor(n);
+    };
+    var a = esquina(xi, yi);
+    var b = esquina(xi + 1, yi);
+    var c = esquina(xi, yi + 1);
+    var d = esquina(xi + 1, yi + 1);
+    return (a * (1 - u) + b * u) * (1 - v) + (c * (1 - u) + d * u) * v;
+  }
+
+  /* Cuatro octavas: colinas grandes, laderas y detalle, menos un cauce por el
+     que correría el agua. */
+  function alturaDelTerreno(x, y) {
+    var h = 0;
+    var amplitud = 1;
+    var frecuencia = 1;
+    var total = 0;
+    for (var o = 0; o < 4; o++) {
+      h += ruidoDeValor(x * frecuencia, y * frecuencia) * amplitud;
+      total += amplitud;
+      amplitud *= 0.5;
+      frecuencia *= 2.1;
+    }
+    h /= total;
+    var cauce = Math.exp(-Math.pow((y - 0.22 * Math.sin(x * 1.7)) * 3.4, 2));
+    return (h - 0.44) * 0.36 - cauce * 0.075;
+  }
+
+  var ANCHO_TERRENO = 2.6;
+  var FONDO_TERRENO = 1.6;
+
   function terreno(canvas, THREE) {
     var escena = new THREE.Scene();
-    var camara = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-    camara.position.set(0, 1.05, 1.35);
-    camara.lookAt(0, 0, 0);
+    var camara = new THREE.PerspectiveCamera(38, 1, 0.01, 100);
+    /* El mundo va con la altura en z, así que «arriba» es z y no y. */
+    camara.up.set(0, 0, 1);
 
     var render = new THREE.WebGLRenderer({
       canvas: canvas,
@@ -213,27 +256,83 @@
     });
     render.setClearAlpha(0);
 
-    var geometria = new THREE.PlaneGeometry(2.6, 1.5, 46, 28);
-    var original = Float32Array.from(geometria.attributes.position.array);
-    var posicion = geometria.attributes.position;
+    var total = 26000;
+    var posiciones = new Float32Array(total * 3);
+    var colores = new Float32Array(total * 3);
+    var masBajo = 1e9;
+    var masAlto = -1e9;
+    var i;
 
-    var material = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(colorDe("--accent") || "#e0b47c"),
-      wireframe: true,
+    /* Una rejilla con temblor: así no se ven las filas y parece un muestreo. */
+    var lado = Math.ceil(Math.sqrt(total));
+    for (i = 0; i < total; i++) {
+      var cx = i % lado;
+      var cy = (i / lado) | 0;
+      var x = (cx / (lado - 1) - 0.5) * ANCHO_TERRENO + (Math.random() - 0.5) * 0.006;
+      var y = (cy / (lado - 1) - 0.5) * FONDO_TERRENO + (Math.random() - 0.5) * 0.006;
+      var z = alturaDelTerreno(x * 2.1, y * 2.1) + (Math.random() - 0.5) * 0.0035;
+      posiciones[i * 3] = x;
+      posiciones[i * 3 + 1] = y;
+      posiciones[i * 3 + 2] = z;
+      if (z < masBajo) masBajo = z;
+      if (z > masAlto) masAlto = z;
+    }
+
+    /* El color por altura: los bajos apagados y las cumbres más claras, que es
+       lo que da la lectura de relieve. */
+    var tinte = new THREE.Color(colorDe("--accent") || "#e0b47c");
+    var abajo = new THREE.Color(colorDe("--ascii-rgb") ? colorAscii() : "#7fa6ce");
+    var rango = Math.max(1e-6, masAlto - masBajo);
+    for (i = 0; i < total; i++) {
+      var t = (posiciones[i * 3 + 2] - masBajo) / rango;
+      var c = abajo.clone().lerp(tinte, 0.25 + t * 0.75);
+      colores[i * 3] = c.r;
+      colores[i * 3 + 1] = c.g;
+      colores[i * 3 + 2] = c.b;
+    }
+
+    var geometria = new THREE.BufferGeometry();
+    geometria.setAttribute("position", new THREE.BufferAttribute(posiciones, 3));
+    geometria.setAttribute("color", new THREE.BufferAttribute(colores, 3));
+    geometria.computeBoundingSphere();
+
+    var material = new THREE.PointsMaterial({
+      size: 0.008,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.92,
+      sizeAttenuation: true,
     });
 
-    var malla = new THREE.Mesh(geometria, material);
-    escena.add(malla);
+    var puntos = new THREE.Points(geometria, material);
+    escena.add(puntos);
 
-    /* En un panel alto y estrecho el terreno se sale por los lados, así que la
-       cámara se aleja lo justo para que quepa a lo ancho. */
+    /* El agua: una lámina translúcida que sube y baja despacio. Es lo único que
+       se mueve, y significa algo. */
+    var agua = new THREE.Mesh(
+      new THREE.PlaneGeometry(ANCHO_TERRENO * 1.3, FONDO_TERRENO * 1.3),
+      new THREE.MeshBasicMaterial({
+        color: new THREE.Color(colorAscii()),
+        transparent: true,
+        opacity: 0.26,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      })
+    );
+    escena.add(agua);
+
+    var nivelBase = masBajo + rango * 0.34;
+    var empuje = 0;
+
+    /* Un ángulo muy bajo, casi a ras de suelo: el terreno se aleja hacia una
+       línea de horizonte alta y llena un panel alto. Visto desde arriba solo
+       ocupaba la franja central y el resto quedaba vacío. */
     var encuadrar = function () {
       camara.aspect = (canvas.clientWidth || 1) / (canvas.clientHeight || 1);
-      var estrecho = Math.max(0.45, Math.min(1, camara.aspect));
-      camara.position.set(0, 1.05, 1.35).multiplyScalar(1 / estrecho);
-      camara.lookAt(0, 0, 0);
+      var estrecho = Math.max(0.5, Math.min(1, camara.aspect));
+      var escala = 1.42 / estrecho;
+      camara.position.set(0, -1.2 * escala, 0.78 * escala);
+      camara.lookAt(0, 0.06, 0);
       camara.updateProjectionMatrix();
     };
 
@@ -242,49 +341,28 @@
     render.setSize(tam.ancho, tam.alto, false);
     encuadrar();
 
-    /* Sin puerta de «ratón fino»: cuando esa consulta da falso —y da falso en
-       entornos reales— el escucha no se instalaba y el cursor no tenía ningún
-       efecto. Un dispositivo sin puntero simplemente no emite pointermove. */
-    var puntero = { x: 1e3, y: 1e3 };
+    /* El cursor sube el agua: es la interacción que cuenta el proyecto. */
     canvas.parentElement.addEventListener(
       "pointermove",
       function (evento) {
         var caja = canvas.getBoundingClientRect();
-        puntero.x = ((evento.clientX - caja.left) / caja.width - 0.5) * 2.6;
-        puntero.y = -((evento.clientY - caja.top) / caja.height - 0.5) * 1.5;
+        empuje = -((evento.clientY - caja.top) / caja.height - 0.5) * 2;
       },
       { passive: true }
     );
     canvas.parentElement.addEventListener("pointerleave", function () {
-      puntero.x = 1e3;
-      puntero.y = 1e3;
-    });
-
-    var relieve = function (x, y, t) {
-      var base =
-        0.09 * Math.sin(2.4 * x + 1.1) * Math.cos(3.1 * y - 0.4) +
-        0.05 * Math.sin(5.2 * x - 2.3 * y);
-      /* La onda que sale del puntero, apagándose con la distancia. */
-      var dx = x - puntero.x;
-      var dy = y - puntero.y;
-      var d = Math.sqrt(dx * dx + dy * dy);
-      var onda = 0.16 * Math.sin(d * 9 - t * 0.004) * Math.exp(-d * 1.5);
-      return base + onda;
-    };
-
-    var motor = bucle(function (t) {
-      for (var i = 0; i < posicion.count; i++) {
-        var x = original[i * 3];
-        var y = original[i * 3 + 1];
-        posicion.setZ(i, relieve(x, y, t));
-      }
-      posicion.needsUpdate = true;
-      geometria.computeBoundingSphere();
-      render.render(escena, camara);
+      empuje = 0;
     });
 
     document.addEventListener("themechange", function () {
-      material.color = new THREE.Color(colorDe("--accent") || "#e0b47c");
+      material.needsUpdate = true;
+      agua.material.color = new THREE.Color(colorAscii());
+    });
+
+    var motor = bucle(function (t) {
+      var marea = Math.sin(t * 0.00035) * 0.05;
+      agua.position.z = nivelBase + marea + empuje * 0.12;
+      render.render(escena, camara);
     });
 
     window.addEventListener(
@@ -299,10 +377,7 @@
     );
 
     if (movimientoReducido) {
-      for (var j = 0; j < posicion.count; j++) {
-        posicion.setZ(j, relieve(original[j * 3], original[j * 3 + 1], 0));
-      }
-      posicion.needsUpdate = true;
+      agua.position.z = nivelBase;
       render.render(escena, camara);
       return;
     }
@@ -361,30 +436,30 @@
       var u = 1 - (i / (total - 1)) * 2;
       var r = Math.sqrt(Math.max(0, 1 - u * u));
       var th = oro * i;
-      var px = Math.cos(th) * r * 0.62;
-      var py = u * 0.78 + 0.06;
-      var pz = Math.sin(th) * r * 0.72;
+      var px = Math.cos(th) * r * 0.56;
+      var py = u * 0.96 + 0.02;
+      var pz = Math.sin(th) * r * 0.64;
 
       /* Órbitas: dos huecos a los lados de la cara. */
       var o1 =
-        (px - 0.24) * (px - 0.24) +
-        (py - 0.1) * (py - 0.1) +
-        (pz - 0.52) * (pz - 0.52);
+        (px - 0.21) * (px - 0.21) +
+        (py - 0.14) * (py - 0.14) +
+        (pz - 0.45) * (pz - 0.45);
       var o2 =
-        (px + 0.24) * (px + 0.24) +
-        (py - 0.1) * (py - 0.1) +
-        (pz - 0.52) * (pz - 0.52);
-      if (o1 < 0.05 || o2 < 0.05) {
+        (px + 0.21) * (px + 0.21) +
+        (py - 0.14) * (py - 0.14) +
+        (pz - 0.45) * (pz - 0.45);
+      if (o1 < 0.045 || o2 < 0.045) {
         continue;
       }
 
       /* Fosa nasal. */
-      if (px * px + (py + 0.16) * (py + 0.16) + (pz - 0.62) * (pz - 0.62) < 0.014) {
+      if (px * px + (py + 0.2) * (py + 0.2) + (pz - 0.55) * (pz - 0.55) < 0.012) {
         continue;
       }
 
-      /* La base se recorta para que quede la bóveda. */
-      if (py < -0.42 && Math.abs(px) < 0.34 && pz > -0.2) {
+      /* La base se recorta para que quede la bóveda craneal y la mandíbula. */
+      if (py < -0.52 && Math.abs(px) < 0.3 && pz > -0.16) {
         continue;
       }
 
@@ -411,6 +486,7 @@
 
     var geometria = new THREE.BufferGeometry();
     geometria.setAttribute("position", new THREE.BufferAttribute(generar(), 3));
+    geometria.computeBoundingBox();
 
     var corte = new THREE.Plane(new THREE.Vector3(1, 0, 0), 0.6);
     var material = new THREE.PointsMaterial({
@@ -425,14 +501,31 @@
     var puntos = new THREE.Points(geometria, material);
     escena.add(puntos);
 
-    /* Se encuadra por el lado corto: si el panel es más alto que ancho, el
-       volumen se saldría por los lados con solo ajustar la altura. */
+    /* Se encuadra con la caja **real** del volumen, no con una esfera que lo
+       engloba: la esfera dejaba el modelo pequeño y flotando en el centro.
+       En horizontal se toma el radio mayor, porque el volumen gira y su silueta
+       cambia; así nunca se sale por los lados. */
+    var caja = geometria.boundingBox;
+    var altoVolumen = caja.max.y - caja.min.y;
+    var radioHorizontal = 0;
+    for (var v = 0; v < geometria.attributes.position.count; v++) {
+      var vx = geometria.attributes.position.getX(v);
+      var vz = geometria.attributes.position.getZ(v);
+      var d = Math.sqrt(vx * vx + vz * vz);
+      if (d > radioHorizontal) {
+        radioHorizontal = d;
+      }
+    }
+    var anchoVolumen = radioHorizontal * 2;
+
+    /* La distancia que llena el canvas por el lado que antes se agote, más un
+       seis por ciento de aire para que no toque los bordes. */
     var encuadrar = function () {
       camara.aspect = (canvas.clientWidth || 1) / (canvas.clientHeight || 1);
-      var medioFov = (camara.fov * Math.PI) / 360;
-      var radio = 1.35;
-      var distancia = radio / (Math.tan(medioFov) * Math.min(1, camara.aspect));
-      camara.position.set(0, 0, distancia);
+      var medioFov = Math.tan((camara.fov * Math.PI) / 360);
+      var porAlto = altoVolumen / (2 * medioFov);
+      var porAncho = anchoVolumen / (2 * medioFov * camara.aspect);
+      camara.position.set(0, 0, Math.max(porAlto, porAncho) * 1.06);
       camara.updateProjectionMatrix();
     };
 
