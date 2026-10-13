@@ -219,22 +219,24 @@
      todo el documento, y esto corre en cada fotograma. */
 
   var movimientoReducido = false;
-  var punteroFino = false;
   try {
     movimientoReducido = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
-    punteroFino = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   } catch (error) {
     movimientoReducido = false;
-    punteroFino = false;
+  }
+
+  /* El tipo de puntero se mira en cada evento y no una vez al arrancar: la
+     consulta de «ratón fino» da falso en entornos que sí tienen ratón, y
+     entonces media interfaz se quedaba sin respuesta al cursor. */
+  function esTactil(evento) {
+    return evento && evento.pointerType === "touch";
   }
 
   var canvas = document.getElementById("ascii-field");
-  var terminalLag = document.querySelector("[data-terminal]");
-  var terminal = terminalLag ? terminalLag.querySelector(".terminal") : null;
+  var terminal = document.querySelector(".terminal");
   var hero = document.querySelector(".hero");
-  var perfil = document.getElementById("perfil");
   var contacto = document.getElementById("contacto");
 
   /* El tecleo se resuelve con `steps()`, así que necesita saber cuántas letras
@@ -269,22 +271,18 @@
   }
 
   (function escenario() {
-    if (!canvas && !terminalLag) {
+    if (!canvas) {
       return;
     }
 
     var TAU_DERIVA = 0.12; // s: suavizado del empuje del fondo
     var TOPE_DERIVA = 18; // px: cuánto puede adelantarse o quedarse el fondo
-    var ACLARADO = 0.35; // cuánto se apaga el fondo al llegar al contacto
 
     var y = window.scrollY;
     var anteriorY = y;
 
     var ascii = 0;
     var asciiAplicado = -1;
-    var lag = 0;
-    var lagAplicado = -999;
-    var topeLag = 0;
 
     var empuje = 0;
     var empujeAplicado = -999;
@@ -317,11 +315,10 @@
         progresoContacto = 0;
       }
 
-      /* El fondo se apaga al llegar al contacto, y lo hace con la opacidad del
-         lienzo: cambiarla no cuesta ni un repintado, así que la mezcla es
-         continua de verdad y no por escalones. */
-      ascii = entrada * (1 - ACLARADO * progresoContacto);
-      lag = topeLag * entrada;
+      /* El fondo se apaga al llegar al contacto y ya no vuelve: el pie también
+         va sin campo detrás. Se hace con la opacidad del lienzo, que no cuesta
+         ni un repintado, así que la mezcla es continua y no por escalones. */
+      ascii = entrada * (1 - progresoContacto);
 
       avisarFondo(
         progresoContacto > 0.5 ? "contacto" : entrada < 0.75 ? "hero" : "lectura",

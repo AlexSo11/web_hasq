@@ -198,11 +198,22 @@
        cambia el ancho máximo de la página el campo se ajusta solo. */
     var left = -1;
     var right = -1;
-    var wrap = document.querySelector(".wrap");
-    if (wrap) {
-      var rect = wrap.getBoundingClientRect();
-      left = rect.left;
-      right = rect.right;
+    /* La banda es la columna de lectura, no el contenedor: con la maquetación a
+       sangre `.wrap` mide lo mismo que la ventana, así que la banda cubriría
+       toda la pantalla y el campo se quedaría sin sus dos zonas. */
+    var zona =
+      document.querySelector("[data-ascii-quiet]") ||
+      document.querySelector(".wrap");
+    if (zona) {
+      /* El ancho útil, no la caja con relleno: `.wrap` mide lo mismo que la
+         ventana, así que sin restarle el relleno la banda cubriría toda la
+         pantalla y el campo se quedaría sin sus dos zonas. */
+      var rect = zona.getBoundingClientRect();
+      var estilo = window.getComputedStyle(zona);
+      var izq = parseFloat(estilo.paddingLeft) || 0;
+      var der = parseFloat(estilo.paddingRight) || 0;
+      left = rect.left + izq;
+      right = rect.right - der;
     }
 
     colBucket = new Uint8Array(cols);

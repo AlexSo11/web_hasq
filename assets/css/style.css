@@ -105,14 +105,18 @@
      propósito: el desenfoque promedia el ASCII de detrás, pero el tinte es lo
      que garantiza que el texto mantenga el contraste. */
   --glass: rgb(28 28 40 / 76%);
+  --glass-inner: rgb(28 28 40 / 38%);
   --glass-bar: rgb(20 20 20 / 66%);
+  --shadow: rgb(0 0 0 / 55%);
+  --image-outline: rgb(255 255 255 / 10%);
 
   /* Campo ASCII (assets/js/ascii-field.js). El alfa es distinto en los
      márgenes porque ahí no hay texto encima: en la columna de contenido está
      topado para que fg-3 no baje de 4,5:1 sobre el glifo más claro. */
   --ascii-rgb: 127, 166, 206;
-  --ascii-max: 0.22;
-  --ascii-margin-max: 0.6;
+  /* 0,24 es el techo: con 0,26 el texto de las fichas baja de 4,5:1. */
+  --ascii-max: 0.24;
+  --ascii-margin-max: 0.7;
   --ascii-font-size: 11;
 }
 
@@ -136,15 +140,18 @@
   --ok: #1c6b48;
 
   --glass: rgb(255 255 255 / 80%);
+  --glass-inner: rgb(255 255 255 / 45%);
   --glass-bar: rgb(237 240 245 / 74%);
+  --shadow: rgb(28 28 40 / 14%);
+  --image-outline: rgb(0 0 0 / 10%);
 
   /* Azul apagado, sin el croma alto que tenía: un gris azulado que no compite
      con nada. Como el color es más suave, la presencia se pone en los márgenes,
      donde no hay texto encima. Sobre el glifo más claro fg-3 se queda en 4,8:1
      y la barra superior en 5,4:1. */
   --ascii-rgb: 138, 156, 186;
-  --ascii-max: 0.16;
-  --ascii-margin-max: 0.66;
+  --ascii-max: 0.22;
+  --ascii-margin-max: 0.72;
 }
 
 /* 2. Base ------------------------------------------------------------------ */
