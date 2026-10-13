@@ -287,7 +287,9 @@
     var nivelBase = masBajo + rango * 0.34;
 
     var material = new THREE.PointsMaterial({
-      size: 0.0085,
+      /* Un poco más grandes que antes porque el lienzo también lo es: si no, la
+         misma nube se vería más rala al repartirse sobre más píxeles. */
+      size: 0.0105,
       vertexColors: true,
       transparent: true,
       opacity: 0.95,

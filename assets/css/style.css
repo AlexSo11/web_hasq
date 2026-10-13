@@ -1218,7 +1218,10 @@ main,
    deja fuera a las tarjetas sin escena, que siguen a una columna. */
 @media (min-width: 1200px) {
   .project__body:has(> .escena-figura) {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    /* A partes iguales: la escena gana un 25 % de ancho, y con él crece todo el
+       modelado, que se encuadra por el ancho disponible. La columna de texto se
+       queda en unos 64 caracteres, que siguen siendo cómodos. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     column-gap: clamp(1.5rem, 3vw, 3rem);
     align-items: start;
   }
@@ -1679,7 +1682,7 @@ html:not(.js) [data-requires-js] {
    volúmenes son altos. Con un panel largo y estrecho, el modelo solo podía
    ocupar la franja central por mucha cámara que se le pusiera. */
 .escena--gemelo {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
 }
 
 .escena--proyecto {
