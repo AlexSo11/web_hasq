@@ -413,7 +413,6 @@
       function () {
         window.clearTimeout(temporizador);
         temporizador = window.setTimeout(function () {
-          medir();
           calcular();
           arrancar();
         }, 160);
@@ -421,7 +420,6 @@
       { passive: true }
     );
 
-    medir();
     calcular();
     aplicar(1 / 60, 0);
 

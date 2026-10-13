@@ -79,17 +79,24 @@
   --dur-reveal: 300ms;
   --stagger: 60ms;
 
-  --maxw: 1080px;
-  --gutter: clamp(1.25rem, 4vw, 2.75rem);
-  --radius: 4px;
-  --radius-sm: 3px;
+  /* La maquetación va a sangre: no hay ancho máximo que centre la página. Lo
+     que acota la lectura es esta medida en caracteres, y todo el sobrante se lo
+     queda la columna visual. A 1440 px sale exactamente 60/40. */
+  --medida: 82ch;
+  --ancho: 90rem;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  /* Radios por nivel de anidamiento: el panel de fuera es más redondeado que lo
+     que va dentro, que es lo que hace que anidar se vea bien y no pinzado. */
+  --radius: 8px;
+  --radius-sm: 5px;
+  --radius-xs: 3px;
 
   /* Oscuro: shadow de fondo, navy profundo de superficie, frozen de tinta.
      Contrastes medidos con la fórmula de luminancia relativa de la WCAG:
      fg 9,47 · fg-2 7,60 · fg-3 6,90 · acento 9,64 (sobre el fondo). */
   --bg: #141414;
-  --surface: #1c1c28;
-  --surface-2: #23232f;
+  --surface: #17181c;
+  --surface-2: #1e2026;
   --line: #2e2e3c;
   --line-2: #3c3c4e;
   --fg: #a0bddb;
@@ -318,7 +325,9 @@ main,
 
 .wrap {
   width: 100%;
-  max-width: var(--maxw);
+  /* Tope de ancho útil: sin él, a 2560 la tarjeta medía 2432 px de lado a lado y
+     el fondo ASCII desaparecía detrás de los paneles. */
+  max-width: var(--ancho);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -412,8 +421,11 @@ main,
 
 @media (min-width: 720px) {
   .section__head {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    /* El título y su nota, juntos a la izquierda. Repartidos a lo ancho de una
+       pantalla grande quedaban tan lejos que parecían de secciones distintas. */
+    grid-template-columns: minmax(0, 24rem) minmax(0, 52ch);
     align-items: baseline;
+    justify-content: start;
     gap: 2rem;
   }
 }
@@ -551,13 +563,13 @@ main,
 .lang a {
   display: inline-flex;
   align-items: center;
-  min-height: 2.25rem;
+  min-height: 2.5rem;
   padding-inline: 0.6rem;
   color: var(--fg-3);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   text-decoration: none;
-  transition-property: background-color, color;
+  transition-property: background-color, color, scale;
   transition-duration: 140ms;
 }
 
@@ -686,7 +698,9 @@ main,
   align-content: center;
   min-height: 100vh;
   min-height: 100svh;
-  padding-block: clamp(5.5rem, 13vh, 8rem) clamp(3rem, 8vh, 5rem);
+  /* Simétrico a propósito: con el relleno de abajo más corto, todo el contenido
+     quedaba unos 20 px por debajo del centro de la ventana. */
+  padding-block: clamp(4.5rem, 11vh, 7rem);
   scroll-margin-top: 0;
 }
 
@@ -868,8 +882,8 @@ main,
 :not(pre) > code {
   padding: 0.1em 0.35em;
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
+  border-radius: var(--radius-xs);
+  background: var(--glass-inner);
   color: var(--fg);
   font-family: var(--font-mono);
   font-size: 0.875em;
@@ -880,11 +894,7 @@ main,
 .facts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
-  gap: 1px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--line);
-  overflow: hidden;
+  gap: 0.5rem;
 }
 
 .facts__item {
@@ -893,7 +903,9 @@ main,
   justify-content: space-between;
   gap: 0.35rem;
   padding: 0.85rem 1rem;
-  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--glass-inner);
 }
 
 .facts dt {
@@ -1031,13 +1043,23 @@ main,
   }
 }
 
+@media (min-width: 1400px) {
+  .stack-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .stack-block {
   display: grid;
   gap: 0.75rem;
   align-content: start;
   padding: 1.15rem 1.25rem;
-  background: var(--surface);
-}
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: 0 14px 30px -22px var(--shadow);}
 
 .stack-block__title {
   display: flex;
@@ -1133,8 +1155,10 @@ main,
   padding: clamp(1.15rem, 2.6vw, 1.6rem);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface);
-}
+
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: 0 14px 30px -22px var(--shadow);}
 
 /* Tarjeta dentro de la tarjeta: los metadatos dejan de ser una lista y pasan a
    ser un panel con su propio fondo, en fila y con vuelta de línea cuando no
@@ -1147,7 +1171,6 @@ main,
   padding: 0.8rem 1rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface-2);
 }
 
 .meta__period {
@@ -1267,6 +1290,11 @@ main,
   min-height: 1.75rem;
 }
 
+.lang a:active,
+.selector__item:active {
+  scale: 0.96;
+}
+
 .link:hover {
   border-bottom-color: currentcolor;
 }
@@ -1294,14 +1322,16 @@ main,
   border: 1px solid var(--line);
   border-inline-start: 2px solid var(--accent);
   border-radius: var(--radius);
-  background: var(--surface);
-}
+
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: 0 14px 30px -22px var(--shadow);}
 
 @media (min-width: 900px) {
   .callout {
-    grid-template-columns: minmax(0, 1fr) 16rem;
+    grid-template-columns: minmax(0, var(--medida)) minmax(16rem, 1fr);
     align-items: start;
-    gap: 3rem;
+    gap: clamp(2rem, 4vw, 4rem);
   }
 }
 
@@ -1370,8 +1400,10 @@ html:not(.js) [data-requires-js] {
   padding: clamp(1.1rem, 2.6vw, 1.5rem);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface);
-}
+
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: 0 14px 30px -22px var(--shadow);}
 
 .contacto__titulo {
   color: var(--fg);
@@ -1458,10 +1490,11 @@ html:not(.js) [data-requires-js] {
   padding: 0.9rem 1.05rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface);
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(1.1);
   text-decoration: none;
   transform: rotateX(var(--sel-x, 0deg)) rotateY(var(--sel-y, 0deg));
-  transition: border-color 180ms var(--ease-out),
+  transition: border-color 180ms var(--ease-out), scale 140ms var(--ease-out),
     background-color 180ms var(--ease-out);
   will-change: transform;
 }
@@ -1497,7 +1530,6 @@ html:not(.js) [data-requires-js] {
 @media (hover: hover) and (pointer: fine) {
   .selector__item:hover {
     border-color: var(--line-2);
-    background: var(--surface-2);
   }
 }
 
@@ -1575,7 +1607,8 @@ html:not(.js) [data-requires-js] {
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface-2);
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(1.1);
   color: var(--fg-2);
   font-family: var(--font-display);
   font-size: 11px;
@@ -1671,12 +1704,26 @@ html:not(.js) [data-requires-js] {
   margin: 0;
 }
 
+.captura__marco {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  /* Un contorno de un píxel, en blanco o negro puros: un tono teñido recoge el
+     color de debajo y se lee como suciedad en el borde de la imagen. */
+  box-shadow: inset 0 0 0 1px var(--image-outline);
+}
+
 .captura img {
   display: block;
   width: 100%;
   height: auto;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  transition: transform 320ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .captura:hover img {
+    transform: scale(1.03);
+  }
 }
 
 .captura figcaption {
@@ -1767,6 +1814,11 @@ html:not(.js) [data-requires-js] {
   .terminal,
   .selector__item {
     will-change: auto;
+  }
+
+  /* El zoom de la captura es movimiento: se queda en su sitio. */
+  .captura:hover img {
+    transform: none;
   }
 
 

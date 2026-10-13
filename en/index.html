@@ -19,7 +19,7 @@
       content="Software end to end: services in Python, Go and Rust, web interfaces, cloud deployment and medical imaging."
     />
     <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/style.css?v=3" />
     <script>
       (function () {
         var theme = null;
@@ -502,7 +502,11 @@
                     </li>
                   </ul>
 
-                  <figure class="diagrama-figura">
+                  
+
+                
+
+                    <figure class="diagrama-figura">
                     <pre
                       class="diagrama"
                       role="img"
@@ -570,21 +574,6 @@ sources
                   replaces thresholding on 1D histograms with spatially aware,
                   traceable segmentation.
                 </p>
-
-                <figure class="captura">
-                  <img
-                    src="../assets/img/ct-pet-segmentacion.webp"
-                    width="1600"
-                    height="900"
-                    loading="lazy"
-                    decoding="async"
-                    alt="The PET/CT segmentation pipeline panel: Hounsfield unit histogram with the thresholds marked, the optimiser convergence curve and the generated 3D meshes for the whole body and each region."
-                  />
-                  <figcaption>
-                    The pipeline running: thresholded histogram, optimiser convergence
-                    and the per-region 3D meshes.
-                  </figcaption>
-                </figure>
 
                 <dl class="facts">
                   <div class="facts__item">
@@ -931,24 +920,24 @@ sources
               <div class="project__body">
                 <h4 class="project__title">This page</h4>
                 <p class="project__summary">
-                  This very site: a static page with no dependencies and no build
-                    step, with self-hosted fonts, an ASCII field drawn on a canvas
-                    and a single function for the form.
+                  This very site: a static page with no build step, self-hosted fonts,
+                    an ASCII field drawn on a canvas, four 3D
+                    scenes and a single Worker for the form.
                 </p>
                 <ul class="bullets">
                   <li>
-                    <b>~380 kB</b> in total, fonts included, and no third-party
-                      requests except Turnstile, which only loads as you approach
-                      the contact section.
+                    <b>~410 kB</b> in total, fonts included. The 3D scenes add 176 kB
+                      from this same domain and only download as you reach their
+                      section.
                   </li>
                   <li>
-                    An ASCII field with ordered dithering, <b>two opacity zones</b>
-                      and a scroll controller that fades it in, tilts it and thins it
-                      out per section.
+                    An ASCII field with ordered dithering, <b>two opacity
+                      zones</b> and a scroll controller that fades it in, drifts it
+                      and calms it per section.
                   </li>
                   <li>
-                    Contact through <b>Pages Functions</b>, Turnstile and Resend,
-                      plus security headers with a hashed CSP.
+                    The form runs in a <b>Worker</b> with Turnstile and Resend, plus
+                      security headers with a hashed CSP.
                   </li>
                 </ul>
                 <p class="project__links">
