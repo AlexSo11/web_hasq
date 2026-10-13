@@ -680,7 +680,8 @@ main,
 
 @media (min-width: 720px) {
   .hero__name {
-    font-size: 44px;
+    /* 55 px: múltiplo de 11, que es donde la tipografía de píxeles es nítida. */
+    font-size: 55px;
   }
 }
 
@@ -722,13 +723,6 @@ main,
 
 /* 8. Terminal -------------------------------------------------------------- */
 
-/* El envoltorio existe para que el controlador de scroll mueva el terminal con
-   su propio transform sin pisar la inclinación 3D de dentro, y para que la
-   entrada por scroll no tenga que compartir transform con nadie. */
-.terminal-lag {
-  will-change: transform;
-}
-
 .terminal {
   position: relative;
   padding: clamp(1.1rem, 2.6vw, 1.5rem) clamp(1.15rem, 2.8vw, 1.6rem);
@@ -750,9 +744,18 @@ main,
   overflow: hidden;
   color: var(--fg-2);
   font-family: var(--font-display);
-  font-size: 11px;
-  line-height: 2;
+  font-size: 18px;
+  line-height: 1.55;
   white-space: normal;
+}
+
+/* En una ventana baja, 17 líneas a 22 px no caben. Se baja a 11 px, que también
+   es nítido, en lugar de deformar la rejilla de píxeles con un tamaño suelto. */
+@media (max-height: 800px) {
+  .terminal__body {
+    font-size: 11px;
+    line-height: 2;
+  }
 }
 
 .terminal__body .tl {
@@ -1651,8 +1654,8 @@ html:not(.js) [data-requires-js] {
 }
 
 .js .terminal__body .tl {
-  animation: tecleo calc(var(--chars, 1) * 22ms) steps(var(--chars, 1))
-    calc(var(--i, 0) * 110ms) both;
+  animation: tecleo calc(var(--chars, 1) * 34ms) steps(var(--chars, 1))
+    calc(var(--i, 0) * 150ms) both;
 }
 
 /* La entrada del terminal es el propio tecleo, así que solo necesita aparecer:

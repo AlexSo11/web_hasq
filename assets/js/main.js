@@ -301,32 +301,6 @@
       );
     }
 
-    /* Los topes se miden, no se escriben a mano. La medición no se ve afectada
-       por el movimiento porque el único transform de la página vive en el
-       lienzo, que está fuera del flujo. */
-    function medir() {
-      if (!terminalLag || !perfil) {
-        return;
-      }
-      var cajaTerminal = terminalLag.getBoundingClientRect();
-      var yTerminal = cajaTerminal.top + window.scrollY;
-      var cajaPerfil = perfil.getBoundingClientRect();
-      var yPerfil = cajaPerfil.top + window.scrollY;
-      var prosa = perfil.querySelector(".prose");
-
-      if (window.innerWidth >= 960 && prosa) {
-        /* En pantalla ancha Perfil reserva la columna derecha, así que el
-           terminal aterriza justo a la altura del texto: baja por su carril y
-           las palabras no se le echan encima. */
-        var yProsa = prosa.getBoundingClientRect().top + window.scrollY;
-        topeLag = Math.max(0, yProsa - yTerminal - 20);
-      } else {
-        /* En una columna no hay carril: se queda dentro de la portada, encima
-           de la sección. */
-        topeLag = Math.max(0, yPerfil - yTerminal - cajaTerminal.height - 16);
-      }
-    }
-
     function calcular() {
       var altoHero = hero ? hero.offsetHeight : window.innerHeight;
       var recorrido = Math.max(1, altoHero * 0.9);
@@ -397,13 +371,6 @@
         }
       }
 
-      if (terminalLag && Math.abs(lag - lagAplicado) > 0.5) {
-        terminalLag.style.transform = movimientoReducido
-          ? ""
-          : "translate3d(0, " + lag.toFixed(1) + "px, 0)";
-        lagAplicado = lag;
-      }
-
       return Math.abs(empuje - objetivo) > 0.15 || Math.abs(velocidad) > 4;
     }
 
@@ -465,7 +432,6 @@
     // volver a medir o el tope del recorrido del terminal se queda corto.
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
-        medir();
         calcular();
         arrancar();
       });
@@ -473,7 +439,7 @@
 
     /* El paralaje del puntero del terminal solo donde hay ratón de verdad: en
        táctil un hover falso movería la caja al tocar. */
-    if (terminal && punteroFino && !movimientoReducido) {
+    if (terminal && !movimientoReducido) {
       var pendiente = false;
       var ultimoX = 0;
       var ultimoY = 0;
