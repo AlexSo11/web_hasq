@@ -636,10 +636,29 @@ main,
   gap: clamp(2rem, 5vw, 3.5rem);
 }
 
-@media (min-width: 960px) {
+/* El escenario de la columna derecha: el lienzo 3D lo llena y la terminal flota
+   dentro como una tarjeta. El tope de ancho no es cosmético: sin él la terminal
+   se estiraba a 1600 px en una pantalla grande, y su inclinación con perspectiva
+   empujaba el borde fuera de la ventana. */
+/* La terminal, sola en su columna y centrada con ella. El tope de ancho no es
+   cosmético: sin él se estiraba a 1600 px en una pantalla grande y su
+   inclinación con perspectiva empujaba el borde fuera de la ventana. */
+.terminal-lag {
+  /* La tarjeta se ciñe a su línea más larga en vez de estirarse a la columna. */
+  width: fit-content;
+  max-width: 100%;
+  justify-self: center;
+}
+
+@media (min-width: 1000px) {
   .hero__in {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    align-items: start;
+    /* La columna derecha tiene un mínimo de 36rem: por debajo de eso el terminal
+       a 22 px se cortaba, porque el texto no parte (la alineación de las fichas
+       depende de los espacios). La izquierda cede lo que haga falta por encima
+       de los 66 caracteres de lectura cómoda. */
+    grid-template-columns: minmax(0, var(--medida)) minmax(34rem, 1fr);
+    column-gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
   }
 }
 
@@ -1070,6 +1089,30 @@ main,
   min-width: 0;
 }
 
+/* En una pantalla muy ancha, la tarjeta que tiene figura la pone en su propia
+   columna: así el ancho se reparte entre el texto y la imagen en vez de estirar
+   las líneas hasta los 150 caracteres. `:has()` deja fuera a las tarjetas que no
+   tienen figura, que siguen a una columna. */
+/* En pantalla ancha, la tarjeta que tiene escena 3D le da la columna derecha y
+   deja todo lo demás a la izquierda: el texto y, debajo, la imagen. `:has()`
+   deja fuera a las tarjetas sin escena, que siguen a una columna. */
+@media (min-width: 1000px) {
+  .project__body:has(> .escena-figura) {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: start;
+  }
+
+  /* El texto va en un envoltorio propio, así que la rejilla tiene dos hijos y
+     una sola fila. Abarcar cuarenta filas para que la escena llegara abajo
+     sumaba treinta y nueve huecos de 18 px: 718 px de aire. */
+  /* El panel se estira a la altura de su columna y el lienzo lo llena: antes se
+     quedaba en 348 px pegados arriba y dejaba hasta 861 px de nada debajo. */
+  .project__body:has(> .escena-figura) > .escena-figura {
+    align-self: stretch;
+  }
+}
+
 .project__title {
   font-size: clamp(1.15rem, 2.6vw, 1.4rem);
 }
@@ -1452,6 +1495,73 @@ html:not(.js) [data-requires-js] {
   color: var(--fg-3);
   font-size: 0.75rem;
   line-height: 1.55;
+}
+
+/* 15.25 Escenas 3D ---------------------------------------------------------- */
+
+.escena {
+  display: block;
+}
+
+.escena-figura {
+  display: grid;
+  /* El lienzo se lleva el espacio y el pie se queda abajo. */
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: 0 14px 30px -22px var(--shadow);
+}
+
+/* Si el visor no carga se dice, en vez de dejar un marco vacío sin explicación. */
+.escena-figura[data-error] {
+  border-style: dashed;
+  border-color: var(--line-2);
+}
+
+.escena-figura[data-error] .escena {
+  display: none;
+}
+
+.escena-figura[data-error] figcaption {
+  color: var(--fg-2);
+}
+
+.escena-figura figcaption {
+  color: var(--fg-3);
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+
+.escena--gemelo,
+.escena--proyecto {
+  width: 100%;
+  height: 100%;
+  min-height: 15rem;
+  border-radius: var(--radius-sm);
+}
+
+/* La esfera del contacto va por detrás del contenido: por eso el envoltorio
+   necesita ser un elemento posicionado y quedar por encima. */
+.escena--contacto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+/* El 3D es cosa de pantallas anchas, y el móvil no debe pagarlo: si no hay
+   sitio, los lienzos ni se ven ni se rellenan. */
+@media (max-width: 999px) {
+  .escena {
+    display: none;
+  }
 }
 
 /* 15.3 Captura de pantalla -------------------------------------------------- */

@@ -148,66 +148,74 @@
             </div>
           </div>
 
-<div class="terminal-lag" data-terminal>
+          <div class="terminal-lag">
   <div class="terminal">
     <pre class="terminal__body"><code><span class="tl"><span class="c">$</span> whoami</span>
 <span class="tl"><b>Hector Solís</b></span>
 <span class="tl"> </span>
-<span class="tl"><span class="c">$</span> cat perfil.txt</span>
-<span class="tl"><span class="dim">titulo</span>  Ing. en Computación</span>
-<span class="tl"><span class="dim">base</span>    Guadalajara, Jalisco, MX</span>
-<span class="tl"><span class="dim">foco</span>    backend / web / despliegue</span>
-<span class="tl">        imagen médica, datos y 3D</span>
-<span class="tl"><span class="dim">estado</span>  <span class="ok">abierto a colaborar</span></span>
+<span class="tl"><span class="c">$</span> cat disponibilidad.txt</span>
+<span class="tl"><span class="dim">zona</span>       UTC-6 / Guadalajara</span>
+<span class="tl"><span class="dim">modalidad</span>  presencial, remoto o híbrido</span>
+<span class="tl"><span class="dim">idiomas</span>    español e inglés B1</span>
 <span class="tl"> </span>
-<span class="tl"><span class="c">$</span> ls proyectos/</span>
-<span class="tl">en-desarrollo/   concluidos/</span>
+<span class="tl"><span class="c">$</span> cat entorno.txt</span>
+<span class="tl"><span class="dim">sistema</span>    Linux (Fedora, Arch)</span>
+<span class="tl"><span class="dim">editor</span>     Neovim, terminal y tmux</span>
+<span class="tl"> </span>
+<span class="tl"><span class="c">$</span> cat proceso.txt</span>
+<span class="tl"><span class="dim">criterio</span>   medir antes de tocar</span>
+<span class="tl"><span class="dim">pruebas</span>    deben fallar sin el cambio</span>
+<span class="tl"><span class="dim">límites</span>    presupuesto de rendimiento</span>
 <span class="tl"><span class="c">$</span> <span class="caret"></span></span></code></pre>
-  </div>
-</div>
+            </div>
+          </div>
         </div>
       </section>
 
       <section
         class="section"
-        id="perfil"
-        aria-labelledby="perfil-title"
+        id="principios"
+        aria-labelledby="principios-title"
         data-reveal-group
       >
         <div class="wrap">
           <div class="section__head" data-reveal>
-            <h2 class="section__title" id="perfil-title">
-              <span class="section__num" aria-hidden="true">01</span> Perfil
+            <h2 class="section__title" id="principios-title">
+              <span class="section__num" aria-hidden="true">01</span> Principios
             </h2>
-            <p class="section__note">Quién soy y en qué trabajo.</p>
+            <p class="section__note">Cómo trabajo y con qué reglas.</p>
           </div>
 
-          <div class="prose" data-reveal>
-            <p>
-              Soy Ingeniero en Computación y vivo en Guadalajara, Jalisco.
-              Trabajo en software de extremo a extremo: servicios y APIs,
-              procesamiento de datos, interfaces web y despliegue. La imagen
-              médica ha sido mi campo más exigente, y ahí aprendí a leer DICOM
-              con la física correcta, segmentar volúmenes y llevar la geometría
-              resultante a un visor 3D que corre en el navegador.
-            </p>
-            <p>
-              Durante mi servicio social en el
-              <strong>Computer Intelligence and Biorobotics Lab (CIBLab)</strong>
-              de la Universidad de Guadalajara desarrollé un visor DICOM web con
-              segmentación asistida por inteligencia artificial y un pipeline de
-              segmentación PET/CT sin aprendizaje automático. Ahora llevo el
-              <strong>liderazgo técnico</strong> de un gemelo digital de
-              inundaciones para el Área Metropolitana de Guadalajara.
-            </p>
-            <p>
-              Trabajo con una regla simple:
-              <strong>lo que no está medido no está resuelto</strong>. Los
-              proyectos tienen suites de pruebas, presupuestos de rendimiento que
-              se comprueban en integración continua y documentos que registran
-              cada decisión de diseño junto con su justificación.
-            </p>
-          </div>
+          <ul class="principios" data-reveal>
+            <li>
+              <b>Lo que no está medido no está resuelto</b>
+              <span>
+                Suites de pruebas y presupuestos de rendimiento que se comprueban
+                en integración continua.
+              </span>
+            </li>
+            <li>
+              <b>Cómputo medido</b>
+              <span>
+                Perfilar antes de optimizar: el número manda sobre la intuición.
+              </span>
+            </li>
+            <li>
+              <b>Sistemas heterogéneos</b>
+              <span>C++, Python y Rust conviviendo donde cada uno rinde.</span>
+            </li>
+            <li>
+              <b>Trazabilidad de punta a punta</b>
+              <span>
+                De la ecuación al artefacto desplegado, con cada decisión
+                documentada.
+              </span>
+            </li>
+            <li>
+              <b>Reproducibilidad</b>
+              <span>El mismo dato da el mismo resultado en cualquier máquina.</span>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -523,6 +531,15 @@ fuentes
                     <span class="meta__org">Repositorio privado</span>
                   </p>
                 </div>
+
+
+                <figure class="escena-figura" data-reveal data-fallo="No se pudo cargar el visor 3D.">
+                  <canvas class="escena escena--gemelo" data-escena="gemelo" aria-hidden="true"></canvas>
+                      <figcaption>
+                        Malla del terreno con la onda de acumulación.
+                      </figcaption>
+                </figure>
+              </div>
               </article>
 
               <article class="project">
@@ -602,11 +619,43 @@ fuentes
                   </li>
                 </ul>
 
+
+                <figure class="captura">
+                  <div class="captura__marco">
+<img
+                    src="assets/img/ct-pet-segmentacion.webp"
+                    width="1600"
+                    height="900"
+                    loading="lazy"
+                    decoding="async"
+                    alt="Panel del pipeline de segmentación PET/CT: histograma de unidades Hounsfield con los umbrales marcados, curva de convergencia del optimizador y las mallas 3D generadas para el cuerpo completo y cada región."
+                  />
+                  </div>
+
+                  <figcaption>
+                    El pipeline en marcha: histograma con umbrales, convergencia del
+                    optimizador y las mallas 3D por región.
+                  </figcaption>
+                </figure>
+
                 <p class="project__links">
                   <span class="meta__org">Repositorio privado</span>
                 </p>
+
+                    
+
+                
+                            </div>
+
+
+                <figure class="escena-figura" data-reveal data-fallo="No se pudo cargar el visor 3D.">
+                  <canvas class="escena escena--proyecto" data-escena="petct" aria-hidden="true"></canvas>
+                      <figcaption>
+                        Nube de puntos del volumen segmentado, con el plano de corte.
+                      </figcaption>
+                </figure>
               </div>
-            </article>
+              </article>
               </div>
             </section>
 
@@ -644,21 +693,6 @@ fuentes
                   inferencia corren en el servidor; el render 3D y la
                   interacción, en el navegador.
                 </p>
-
-                <figure class="captura">
-                  <img
-                    src="assets/img/innovamed-visor.webp"
-                    width="1600"
-                    height="877"
-                    loading="lazy"
-                    decoding="async"
-                    alt="Portada de InnovaMed AI: el visor 3D con el modelo del estudio, los planos axial, sagital y coronal sincronizados, y los accesos de sesión."
-                  />
-                  <figcaption>
-                    Portada del visor: render 3D del estudio y los tres planos
-                    sincronizados.
-                  </figcaption>
-                </figure>
 
                 <dl class="facts">
                   <div class="facts__item">
@@ -719,13 +753,45 @@ fuentes
                   </li>
                 </ul>
 
+
+                <figure class="captura">
+                  <div class="captura__marco">
+<img
+                    src="assets/img/innovamed-visor.webp"
+                    width="1600"
+                    height="877"
+                    loading="lazy"
+                    decoding="async"
+                    alt="Portada de InnovaMed AI: el visor 3D con el modelo del estudio, los planos axial, sagital y coronal sincronizados, y los accesos de sesión."
+                  />
+                  </div>
+
+                  <figcaption>
+                    Portada del visor: render 3D del estudio y los tres planos
+                    sincronizados.
+                  </figcaption>
+                </figure>
+
                 <p class="project__links">
                   <span class="meta__org">Repositorio privado</span>
                 </p>
-              </div>
-            </article>
 
-            <article class="project">
+                    
+
+                
+                            </div>
+
+
+                <figure class="escena-figura" data-reveal data-fallo="No se pudo cargar el visor 3D.">
+                  <canvas class="escena escena--proyecto" data-escena="innova" aria-hidden="true"></canvas>
+                      <figcaption>
+                        Reconstrucción del cráneo con el plano de corte.
+                      </figcaption>
+                </figure>
+              </div>
+              </article>
+
+            <article class="project project--compacta">
                             <div class="project__meta">
                 <p class="meta__period">2026</p>
 <ul class="chips">
@@ -865,24 +931,24 @@ fuentes
               <div class="project__body">
                 <h4 class="project__title">Esta página</h4>
                 <p class="project__summary">
-                  Este mismo sitio: una página estática sin dependencias ni paso
-                    de compilación, con tipografía autoalojada, un fondo ASCII
-                    dibujado en canvas y una única función para el formulario.
+                  Este mismo sitio: una página estática sin paso de compilación, con
+                    tipografía autoalojada, un fondo ASCII dibujado en canvas, cuatro
+                    escenas 3D y un único Worker para el formulario.
                 </p>
                 <ul class="bullets">
                   <li>
-                    <b>~380 kB</b> en total, fuentes incluidas, y sin peticiones a
-                      terceros salvo Turnstile, que solo se carga al acercarse al
-                      contacto.
+                    <b>~410 kB</b> en total, fuentes incluidas. Las escenas 3D suman
+                      176 kB del propio dominio y solo se descargan al
+                      llegar a su sección.
                   </li>
                   <li>
                     Fondo ASCII con tramado ordenado, <b>dos zonas</b> de
-                      opacidad y un controlador de scroll que lo aparece, lo inclina y
-                      lo dispersa según la sección.
+                      opacidad y un controlador de scroll que lo aparece, lo deriva
+                      y lo aclara según la sección.
                   </li>
                   <li>
-                    Contacto con <b>Pages Functions</b>, Turnstile y Resend, y
-                      cabeceras de seguridad con CSP por hashes.
+                    Formulario en un <b>Worker</b> con Turnstile y Resend, y cabeceras
+                      de seguridad con CSP por hashes.
                   </li>
                 </ul>
                 <p class="project__links">
@@ -910,6 +976,7 @@ fuentes
         aria-labelledby="contacto-title"
         data-reveal-group
       >
+        <canvas class="escena escena--contacto" data-escena="contacto" aria-hidden="true"></canvas>
         <div class="wrap">
           <div class="section__head" data-reveal>
             <h2 class="section__title" id="contacto-title">
