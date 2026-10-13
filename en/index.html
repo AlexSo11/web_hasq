@@ -52,7 +52,7 @@
         </a>
 
         <nav class="nav" aria-label="Sections">
-          <a href="#perfil">profile</a>
+          <a href="#principios">principles</a>
           <a href="#stack">stack</a>
 <a href="#experiencia">experience</a>
                     <a href="#proyectos">projects</a>
@@ -152,65 +152,72 @@
             </div>
           </div>
 
-<div class="terminal-lag" data-terminal>
+          <div class="terminal-lag">
   <div class="terminal">
     <pre class="terminal__body"><code><span class="tl"><span class="c">$</span> whoami</span>
 <span class="tl"><b>Hector Solís</b></span>
 <span class="tl"> </span>
-<span class="tl"><span class="c">$</span> cat profile.txt</span>
-<span class="tl"><span class="dim">degree</span>  Computer Engineering</span>
-<span class="tl"><span class="dim">base</span>    Guadalajara, Jalisco, MX</span>
-<span class="tl"><span class="dim">focus</span>   backend / web / deployment</span>
-<span class="tl">        medical imaging, data and 3D</span>
-<span class="tl"><span class="dim">status</span>  <span class="ok">open to collaborate</span></span>
+<span class="tl"><span class="c">$</span> cat availability.txt</span>
+<span class="tl"><span class="dim">zone</span>       UTC-6 / Guadalajara</span>
+<span class="tl"><span class="dim">mode</span>       presential, remote or hybrid</span>
+<span class="tl"><span class="dim">languages</span>  Spanish and English B1</span>
 <span class="tl"> </span>
-<span class="tl"><span class="c">$</span> ls projects/</span>
-<span class="tl">in-development/   completed/</span>
+<span class="tl"><span class="c">$</span> cat setup.txt</span>
+<span class="tl"><span class="dim">system</span>     Linux (Fedora, Arch)</span>
+<span class="tl"><span class="dim">editor</span>     Neovim, terminal and tmux</span>
+<span class="tl"> </span>
+<span class="tl"><span class="c">$</span> cat process.txt</span>
+<span class="tl"><span class="dim">rule</span>       measure before touching</span>
+<span class="tl"><span class="dim">tests</span>      must fail without the change</span>
+<span class="tl"><span class="dim">limits</span>     performance budget in CI</span>
 <span class="tl"><span class="c">$</span> <span class="caret"></span></span></code></pre>
-  </div>
-</div>
+            </div>
+          </div>
         </div>
       </section>
 
       <section
         class="section"
-        id="perfil"
-        aria-labelledby="perfil-title"
+        id="principios"
+        aria-labelledby="principios-title"
         data-reveal-group
       >
         <div class="wrap">
           <div class="section__head" data-reveal>
-            <h2 class="section__title" id="perfil-title">
-              <span class="section__num" aria-hidden="true">01</span> Profile
+            <h2 class="section__title" id="principios-title">
+              <span class="section__num" aria-hidden="true">01</span> Principles
             </h2>
-            <p class="section__note">Who I am and what I work on.</p>
+            <p class="section__note">How I work and by which rules.</p>
           </div>
 
-          <div class="prose" data-reveal>
-            <p>
-              I am a Computer Engineer based in Guadalajara, Jalisco. I work on
-              software end to end: services and APIs, data processing, web
-              interfaces and deployment. Medical imaging has been my most
-              demanding field, and that is where I learned to read DICOM with the
-              physics done correctly, to segment volumes and to get the resulting
-              geometry into a 3D viewer that runs in the browser.
-            </p>
-            <p>
-              During my social service at the
-              <strong>Computer Intelligence and Biorobotics Lab (CIBLab)</strong>
-              of the University of Guadalajara I built a web DICOM viewer with
-              AI-assisted segmentation and a PET/CT segmentation pipeline with no
-              machine learning at all. I now hold the
-              <strong>technical lead</strong> on a flood digital twin for the
-              Guadalajara Metropolitan Area.
-            </p>
-            <p>
-              I work by one rule: <strong>what has not been measured has not been
-              solved</strong>. The projects ship test suites, performance budgets
-              enforced in continuous integration, and documents that record every
-              design decision together with its justification.
-            </p>
-          </div>
+          <ul class="principios" data-reveal>
+            <li>
+              <b>What has not been measured has not been solved</b>
+              <span>
+                Test suites and performance budgets enforced in continuous
+                integration.
+              </span>
+            </li>
+            <li>
+              <b>Measured computing</b>
+              <span>Profile before optimising: the number beats intuition.</span>
+            </li>
+            <li>
+              <b>Heterogeneous systems</b>
+              <span>C++, Python and Rust coexisting where each one performs.</span>
+            </li>
+            <li>
+              <b>End-to-end traceability</b>
+              <span>
+                From the equation to the deployed artefact, with every decision
+                documented.
+              </span>
+            </li>
+            <li>
+              <b>Reproducibility</b>
+              <span>The same input gives the same result on any machine.</span>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -447,7 +454,8 @@
                     </ul>
               </div>
 
-                <div class="project__body">
+                <div class="project__body"><div class="project__texto">
+                
                   <h4 class="project__title">
                     Flood digital twin for the Guadalajara Metropolitan Area
                   </h4>
@@ -551,7 +559,8 @@ sources
                   </ul>
               </div>
 
-              <div class="project__body">
+              <div class="project__body"><div class="project__texto">
+                
                 <h4 class="project__title">
                   PET/CT segmentation with 3D superpixels and metaheuristic
                   optimisation
@@ -676,7 +685,8 @@ sources
                   </ul>
               </div>
 
-              <div class="project__body">
+              <div class="project__body"><div class="project__texto">
+                
                 <h4 class="project__title">
                   InnovaMed AI: web DICOM viewer with AI-assisted segmentation
                 </h4>
@@ -825,7 +835,7 @@ sources
               </div>
             </article>
 
-            <article class="project">
+            <article class="project project--compacta">
                             <div class="project__meta">
                 <p class="meta__period">2026</p>
 <ul class="chips">
@@ -867,7 +877,7 @@ sources
               </div>
             </article>
 
-            <article class="project">
+            <article class="project project--compacta">
                             <div class="project__meta">
                 <p class="meta__period">2026</p>
 <ul class="chips">
