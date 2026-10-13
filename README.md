@@ -1,109 +1,44 @@
 # CV en línea · Hector Alejandro Solís Quiñones
 
-Sitio personal estático: perfil, stack, experiencia y siete proyectos (dos en
-curso y cinco concluidos). Sin build, sin dependencias, sin rastreadores y sin
-coste de servidor.
+Sitio personal estático. Sin build, sin dependencias y sin coste de servidor.
 
-- **Español:** `index.html`
-- **Inglés:** `en/index.html`
+- **Español:** `index.html` · **Inglés:** `en/index.html`
 
 ## Estructura
 
-```
-.
-├── index.html                     Portada en español
-├── en/index.html                  Portada en inglés
-├── 404.html                       Página de error (autocontenida, para el hosting)
-├── _headers                       Cabeceras de caché y seguridad
-├── .assetsignore                  Lo que no debe publicarse como estático
-├── wrangler.jsonc                 Configuración del Worker y de los assets
-├── src/worker.js                  Sirve los archivos y atiende el formulario
-├── assets/
-│   ├── css/style.css              Hoja única: tokens, componentes y movimiento
-│   ├── js/ascii-field.js          Fondo ASCII en <canvas>
-│   ├── js/main.js                 Tema, escenario de scroll, formulario y selector
-│   ├── fonts/                     Departure Mono + IBM Plex Mono (SIL OFL)
-│   └── img/                       Favicon y las dos capturas (WebP)
-└── markdowns/                     Documentación de trabajo (ignorada por git)
-```
-
-No hay `package.json`, ni `node_modules`, ni paso de compilación: lo que se edita
-es lo que se publica.
+| | |
+| :--- | :--- |
+| `assets/css/style.css` | Hoja única |
+| `assets/js/` | Fondo ASCII, interfaz y escenas 3D |
+| `assets/fonts/` · `assets/img/` | Tipografías (SIL OFL) y capturas |
+| `src/worker.js` | Sirve los archivos y atiende el formulario |
+| `wrangler.jsonc` | Configuración del Worker |
+| `_headers` | Cabeceras de caché y seguridad |
+| `markdowns/` | Notas de trabajo (no se publican) |
 
 ## Verlo en local
 
 ```bash
-python3 -m http.server 8765
-# http://127.0.0.1:8765/
+python3 -m http.server 8765     # http://127.0.0.1:8765/
+npx wrangler dev                # con el formulario
 ```
-
-Conviene servirlo por HTTP y no abrir el archivo con `file://`: los navegadores
-restringen la carga de fuentes desde `file://`.
 
 ## Publicar
 
-Es un **Worker con Assets**, no un proyecto de Pages: eso importa, porque en un
-Worker la carpeta `functions/` se ignora y el enrutado lo decide `src/worker.js`.
-Está conectado a Git, así que cada push a `main` despliega.
-
-Antes de desplegar, comprueba que el `name` de `wrangler.jsonc` es el de tu
-Worker actual:
+Es un Worker con Assets, conectado a Git: cada push a `main` despliega. Si `name`
+en `wrangler.jsonc` no coincide con tu Worker, wrangler crea otro:
 
 ```bash
 npx wrangler deployments list
 ```
 
-Si no coincide, wrangler crea otro Worker y tu dominio sigue apuntando al viejo,
-así que no verías ningún cambio.
-
 ## El formulario de contacto
 
-Los dos valores que no son secretos viven en `wrangler.jsonc`, para que ningún
-despliegue se los lleve por delante:
-
-| Variable | Dónde | Qué es |
-| :--- | :--- | :--- |
-| `CONTACT_FROM` | `wrangler.jsonc` | Remitente, de tu dominio verificado en Resend |
-| `CONTACT_TO` | `wrangler.jsonc` | Dónde llegan los mensajes |
-| `RESEND_API_KEY` | Panel, **tipo Secret** | Clave de Resend |
-| `TURNSTILE_SECRET` | Panel, **tipo Secret** | Secreto del widget de Turnstile |
+| Variable | Dónde |
+| :--- | :--- |
+| `CONTACT_FROM` · `CONTACT_TO` | `wrangler.jsonc` |
+| `RESEND_API_KEY` · `TURNSTILE_SECRET` | Panel, tipo **Secret** |
 
 Los secretos van en **Workers & Pages → tu Worker → Settings → Variables and
-Secrets**, con el tipo **Secret**, y hay que pulsar **Deploy** al terminar. Se
-pueden crear también desde la terminal con `npx wrangler secret put NOMBRE`.
-
-De dónde sale cada valor:
-
-- `RESEND_API_KEY`: en Resend, tras **verificar el dominio** con los registros
-  DNS que te dé. Sin dominio verificado no se puede enviar.
-- `TURNSTILE_SECRET`: el secreto del widget, en **Turnstile** dentro de
-  Cloudflare. La *site key* de ese mismo widget va en el HTML, en `data-sitekey`,
-  **en los dos idiomas**.
-- `CONTACT_FROM`: cualquier dirección de tu dominio verificado. No hace falta que
-  exista ese buzón.
-
-Si falta algo, la ruta responde `503` y **dice qué falta**, sin valores:
-
-```bash
-curl -s -X POST https://hasq.dev/api/contacto \
-  -H 'Content-Type: application/json' -H 'Origin: https://hasq.dev' \
-  -d '{"nombre":"a","correo":"a@b.com","mensaje":"comprobacion","token":"x"}'
-```
-
-## Verlo en local con el formulario
-
-`python3 -m http.server` sirve la página pero no el Worker, así que el formulario
-daría 404. Para probarlo entero hace falta wrangler, que lee `.dev.vars` para las
-variables:
-
-```bash
-npx wrangler dev
-```
-
-## Historial
-
-Los cambios y el porqué de cada decisión están en los commits:
-
-```bash
-git log --oneline
-```
+Secrets**, y hay que pulsar **Deploy** al terminar. La *site key* de Turnstile va
+en el HTML, en `data-sitekey`, en los dos idiomas.
