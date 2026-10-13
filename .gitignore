@@ -7,10 +7,11 @@ markdowns/
 .DS_Store
 Thumbs.db
 
-# Secretos y caché del desarrollo local de las Pages Functions. `.dev.vars`
-# lleva la clave de Resend y el secreto de Turnstile: nunca al repositorio.
+# Secretos y caché del desarrollo local del Worker. `.dev.vars` lleva la clave
+# de Resend y el secreto de Turnstile: nunca al repositorio.
 .dev.vars
 .wrangler/
 
-# Carpeta de pruebas del navegador
+# Carpetas de pruebas del navegador
 .preview/
+.prueba/
