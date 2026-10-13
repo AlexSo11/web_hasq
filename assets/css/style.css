@@ -823,25 +823,106 @@ main,
 }
 
 .chips li {
-  padding: 0.2rem 0.5rem;
+  padding: 0.15rem 0.45rem;
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
+  border-radius: var(--radius-xs);
+  background: var(--glass-inner);
   color: var(--fg-2);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   white-space: nowrap;
 }
 
+/* Etiquetas de consola. El corchete lo pone el CSS y no el contenido, para no
+   duplicarlo en el texto de los dos idiomas. El fondo opaco se queda: las
+   etiquetas viven encima del campo ASCII. */
+.chips li::before {
+  content: "[";
+}
+
+.chips li::after {
+  content: "]";
+}
+
+.chips li::before,
+.chips li::after {
+  color: var(--fg-3);
+}
+
+/* Pista de uso del stack. Es un solo elemento que sigue al puntero, y no un
+   pseudo-elemento por etiqueta: los corchetes ya ocupan ::before y ::after. */
+.pista {
+  position: fixed;
+  z-index: 2;
+  max-width: 30rem;
+  margin: 0;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms var(--ease-out);
+}
+
+.pista[data-visible] {
+  opacity: 1;
+}
+
+/* Principios: la sección que antes era Perfil, en tarjetas cortas. */
+.principios {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 720px) {
+  .principios {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .principios {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.principios li {
+  display: grid;
+  gap: 0.4rem;
+  align-content: start;
+  padding: 1.1rem 1.2rem;
+  /* La excepción a quitar paneles: aquí el cristal es el efecto que pediste, no
+     un fondo que tape el campo. */
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: 0 14px 30px -22px var(--shadow);
+}
+
+.principios b {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.principios span {
+  color: var(--fg-2);
+  font-size: 0.9375rem;
+}
+
 /* 11b. Bloques de stack ---------------------------------------------------- */
 
 .stack-grid {
   display: grid;
-  gap: 1px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--line);
-  overflow: hidden;
+  gap: 1rem;
 }
 
 @media (min-width: 720px) {

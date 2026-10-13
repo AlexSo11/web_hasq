@@ -673,11 +673,79 @@
     });
   }
 
+  /* -------------------------------------------------- foco en el destino */
+
+  /* Al pulsar un ancla, el foco viaja con la vista: quien navega con teclado o
+     con lector de pantalla aterriza donde han aterrizado los ojos. El
+     desplazamiento lo sigue haciendo el navegador con `scroll-behavior`. */
+  Array.prototype.forEach.call(
+    document.querySelectorAll('a[href^="#"]'),
+    function (enlace) {
+      enlace.addEventListener("click", function () {
+        var destino = document.getElementById(
+          (enlace.getAttribute("href") || "").slice(1)
+        );
+        if (!destino) {
+          return;
+        }
+        if (!destino.hasAttribute("tabindex")) {
+          destino.setAttribute("tabindex", "-1");
+        }
+        try {
+          destino.focus({ preventScroll: true });
+        } catch (error) {
+          destino.focus();
+        }
+      });
+    }
+  );
+
+  /* ------------------------------------------------- pista de uso del stack */
+
+  /* Las etiquetas del stack que coinciden con algún proyecto llevan un
+     `data-usado`. La pista es un refuerzo visual y nada más: el dato ya está en
+     las fichas de cada proyecto, así que sin JavaScript no se pierde nada, y por
+     eso no se añaden 47 paradas de tabulación para alcanzarla. */
+  var rejillaStack = document.querySelector(".stack-grid");
+
+  if (rejillaStack) {
+    var pista = document.createElement("p");
+    pista.className = "pista";
+    pista.setAttribute("aria-hidden", "true");
+    document.body.appendChild(pista);
+
+    var ocultarPista = function () {
+      pista.removeAttribute("data-visible");
+    };
+
+    rejillaStack.addEventListener("pointerover", function (evento) {
+      /* En táctil, `pointerover` se dispara al tocar y la pista se quedaría
+         pegada en pantalla. */
+      if (esTactil(evento)) {
+        return;
+      }
+      var etiqueta = evento.target.closest("[data-usado]");
+      if (!etiqueta) {
+        return;
+      }
+      pista.textContent = etiqueta.getAttribute("data-usado");
+      var caja = etiqueta.getBoundingClientRect();
+      var ancho = pista.offsetWidth;
+      var izquierda = Math.min(caja.left, window.innerWidth - ancho - 12);
+      pista.style.left = Math.max(12, Math.round(izquierda)) + "px";
+      pista.style.top = Math.round(caja.bottom + 6) + "px";
+      pista.setAttribute("data-visible", "");
+    });
+
+    rejillaStack.addEventListener("pointerout", ocultarPista);
+    window.addEventListener("scroll", ocultarPista, { passive: true });
+  }
+
   /* ------------------------------------------------- selector de contacto */
 
   var selector = document.querySelector("[data-selector]");
 
-  if (selector && punteroFino && !movimientoReducido) {
+  if (selector && !movimientoReducido) {
     Array.prototype.forEach.call(
       selector.querySelectorAll(".selector__item"),
       function (tarjeta) {
